@@ -2,22 +2,16 @@
 
 import * as React from "react";
 import {
-  IconChartBar,
-  IconFolder,
-  IconListDetails,
   IconLocation,
   IconMapPin,
   IconMessage2,
   IconSettings,
   IconTicket,
   IconUser,
-  IconUserFilled,
-  IconUsers,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
 
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { MicOff, UnlockIcon, Volume2Icon, WifiIcon } from "lucide-react";
+import { MicOff, Volume2Icon, WifiIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import AnimToggle from "./sub-ui/animated-toggle";

@@ -20,7 +20,7 @@ export default function Layout({
       <AppSidebar variant="sidebar" />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col">{children}</div>
+        <div className="flex flex-1 flex-col bg-[#E8F1FB]">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

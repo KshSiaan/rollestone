@@ -1,5 +1,8 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <div>Page</div>;
+  //check if token is ok
+  //if not redirect to sign in
+  // if yes redirect to driver
+  return redirect("/driver/driver");
 }
