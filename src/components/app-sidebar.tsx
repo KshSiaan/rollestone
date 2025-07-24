@@ -31,6 +31,40 @@ import { MicOff, Volume2Icon, WifiIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import AnimToggle from "./sub-ui/animated-toggle";
+const prefix = "/driver";
+
+const navMainItems = [
+  {
+    title: "Driver",
+    url: "/driver",
+    icon: IconUser,
+  },
+  {
+    title: "Tickets",
+    url: "/tickets",
+    icon: IconTicket,
+  },
+  {
+    title: "Blocking",
+    url: "/blocking",
+    icon: IconLocation,
+  },
+  {
+    title: "Locating",
+    url: "/locating",
+    icon: IconMapPin,
+  },
+  {
+    title: "Messaging",
+    url: "/messaging",
+    icon: IconMessage2,
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: IconSettings,
+  },
+];
 
 const data = {
   user: {
@@ -38,38 +72,10 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Driver",
-      url: "#",
-      icon: IconUser,
-    },
-    {
-      title: "Tickets",
-      url: "#",
-      icon: IconTicket,
-    },
-    {
-      title: "Blocking",
-      url: "#",
-      icon: IconLocation,
-    },
-    {
-      title: "Locating",
-      url: "#",
-      icon: IconMapPin,
-    },
-    {
-      title: "Messaging",
-      url: "#",
-      icon: IconMessage2,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-  ],
+  navMain: navMainItems.map((item) => ({
+    ...item,
+    url: `${prefix}${item.url}`,
+  })),
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
