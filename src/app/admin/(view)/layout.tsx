@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/app-sidebar";
-
+import AdminHeader from "@/components/admin-header";
+import { AdminSidebar } from "@/components/admin-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
@@ -13,13 +13,13 @@ export default function Layout({
       style={
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
+          "--header-height": "calc(var(--spacing) * 20)",
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="sidebar" rounded />
+      <AdminSidebar variant="sidebar" />
       <SidebarInset>
-        <SiteHeader />
+        <AdminHeader />
         <div className="flex flex-1 flex-col bg-[#E8F1FB]">{children}</div>
       </SidebarInset>
     </SidebarProvider>

@@ -27,7 +27,7 @@ export default function TicketTopup() {
   };
 
   return (
-    <Card className="w-full h-[80dvh] flex flex-col justify-between">
+    <Card className="w-full h-auto flex flex-col justify-between">
       <CardContent className="h-auto w-full grid grid-cols-3 gap-6 p-6">
         {ticketTypes.map((x, i) => (
           <Dialog key={i}>

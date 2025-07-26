@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <main className="px-[100px] py-[50px] h-full w-full grid grid-cols-2 gap-12">
       <TicketTopup />
-      <Card className="w-full h-[80dvh]">
+      <Card className="w-full h-[85dvh]">
         <CardHeader className="flex items-center justify-start gap-2">
           <QrCodeIcon className="flex" />
           <CardTitle className="block">Recent Transaction</CardTitle>
