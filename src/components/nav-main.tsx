@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ZapIcon } from "lucide-react";
+import { useState } from "react";
 
 export function NavMain({
   items,
@@ -22,22 +23,27 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
-
+  const [active, setActive] = useState(true);
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Quick Create"
-              className="border h-14 flex items-center justify-center text-lg font-semibold"
-              variant={"success"}
-            >
-              <ZapIcon className="size-8" />
-              <span>Auto on</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {!pathname.includes("/admin") && (
+          <SidebarMenu>
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Quick Create"
+                className="border h-14 flex items-center justify-center text-lg font-semibold"
+                variant={active ? "success" : "destructive"}
+                onClick={() => {
+                  setActive(!active);
+                }}
+              >
+                <ZapIcon className="size-8" />
+                <span>Auto {active ? "on" : "off"}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
         <SidebarMenu>
           {items.map((item) => {
             const isActive = pathname === item.url;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -21,6 +21,14 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CompanyDetails from "./company-details";
 export default function Page() {
   return (
     <main className="p-6">
@@ -82,9 +90,19 @@ export default function Page() {
                         <EditIcon />
                       </Link>
                     </Button>
-                    <Button variant={"ghost"}>
-                      <EyeIcon />
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant={"ghost"}>
+                          <EyeIcon />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="min-w-[60dvw]">
+                        <DialogHeader className="border-b pb-2">
+                          <DialogTitle>Company Details</DialogTitle>
+                        </DialogHeader>
+                        <CompanyDetails />
+                      </DialogContent>
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               ))}

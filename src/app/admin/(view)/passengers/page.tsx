@@ -11,20 +11,13 @@ import {
   ChevronRight,
   CoinsIcon,
   EyeIcon,
-  LayoutDashboardIcon,
   MonitorCogIcon,
   SearchIcon,
-  SlidersVerticalIcon,
-
+  UserPlus2Icon,
+  Users2Icon,
 } from "lucide-react";
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   Table,
   TableBody,
@@ -35,6 +28,14 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import PassengerDetails from "./pass-details";
 export default function Page() {
   const cardData = [
     {
@@ -80,12 +81,8 @@ export default function Page() {
         <CardHeader className="flex flex-row justify-between items-center">
           <div className="">
             <CardTitle className="flex items-center gap-2 text-xl mb-2">
-              <LayoutDashboardIcon className="text-blue-600" /> Live Trip
-              Dashboard - Morning Rush Hour (6:15 AM)
+              <Users2Icon className="" /> Search & Manage Users
             </CardTitle>
-            <p className="text-sm">
-              Real-time tracking of all active bus routes
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <div className=" border rounded-md flex items-center px-2">
@@ -95,21 +92,10 @@ export default function Page() {
                 placeholder="Search  routes"
               />
             </div>
-            <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue
-                  placeholder={
-                    <p className="flex items-center gap-2">
-                      <SlidersVerticalIcon />
-                      All stauses
-                    </p>
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">...</SelectItem>
-              </SelectContent>
-            </Select>
+            <Button>
+              <UserPlus2Icon />
+              Create User
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -137,9 +123,19 @@ export default function Page() {
                   </TableCell>
                   <TableCell className="">2HOURS AGO</TableCell>
                   <TableCell>
-                    <Button variant={"ghost"}>
-                      <EyeIcon />
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant={"ghost"}>
+                          <EyeIcon />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle></DialogTitle>
+                        </DialogHeader>
+                        <PassengerDetails />
+                      </DialogContent>
+                    </Dialog>
                     <Button variant={"ghost"}>
                       <CoinsIcon />
                     </Button>

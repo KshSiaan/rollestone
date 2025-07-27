@@ -12,18 +12,13 @@ import {
   ChevronLeftIcon,
   ChevronRight,
   EyeIcon,
-  LayoutDashboardIcon,
-  MapPinIcon,
   MessageSquareIcon,
   PauseIcon,
   SearchIcon,
   SlidersVerticalIcon,
   StarIcon,
-  TrendingUpIcon,
-  TriangleAlert,
   UserCheckIcon,
   UserPlusIcon,
-  WaypointsIcon,
   XCircleIcon,
 } from "lucide-react";
 import React from "react";
@@ -43,9 +38,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import DriverProfilePopup from "./driver-prof";
 export default function Page() {
   return (
     <main className="h-full w-full p-2">
@@ -172,9 +175,19 @@ export default function Page() {
                   </TableCell>
                   <TableCell className="">Downtown Route</TableCell>
                   <TableCell>
-                    <Button variant={"ghost"}>
-                      <EyeIcon />
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant={"ghost"}>
+                          <EyeIcon />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle></DialogTitle>
+                        </DialogHeader>
+                        <DriverProfilePopup />
+                      </DialogContent>
+                    </Dialog>
                     <Button variant={"ghost"}>
                       <MessageSquareIcon />
                     </Button>

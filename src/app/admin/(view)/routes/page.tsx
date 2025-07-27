@@ -2,52 +2,23 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  BusFrontIcon,
   CheckCircle2,
   ChevronLeftIcon,
   ChevronRight,
-  EyeIcon,
-  LayoutDashboardIcon,
   MapIcon,
-  MapPinIcon,
-  MessageSquareIcon,
   NavigationIcon,
-  PauseIcon,
   RouteIcon,
   SearchIcon,
-  SlidersVerticalIcon,
-  StarIcon,
-  TrendingUpIcon,
-  TriangleAlert,
-  UserCheckIcon,
   UserPlusIcon,
-  WaypointsIcon,
-  XCircleIcon,
 } from "lucide-react";
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 export default function Page() {
