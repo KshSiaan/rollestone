@@ -4,6 +4,7 @@ import { BellIcon, Calendar, ChevronDown, ClockIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { useCurrentTime } from "./sub-ui/get-time";
+import Link from "next/link";
 
 function getCurrentFormattedDate(): string {
   const now = new Date();
@@ -38,8 +39,10 @@ export default function AdminHeader() {
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          <Button variant={"outline"}>
-            <BellIcon /> Notification
+          <Button variant={"outline"} asChild>
+            <Link href={"/admin/notification"}>
+              <BellIcon /> Notification
+            </Link>
           </Button>
           <div className="p-2 rounded-md border flex flex-row text-sm! gap-4 items-center">
             <Avatar className="size-10">
