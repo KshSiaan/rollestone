@@ -5,12 +5,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import { DownloadIcon, FileIcon, LayoutDashboardIcon } from "lucide-react";
 import React from "react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Revenue from "./revenue";
+import Performance from "./performance";
+import Passengers from "./passengers";
+import Routes from "./routes";
+
 export default function Page() {
   const cardData = [
     {
@@ -74,61 +78,30 @@ export default function Page() {
             </Button>
           </div>
         </CardHeader>
-        <div className=" p-4">
+        <div className="">
           <Tabs defaultValue="revenue">
-            <TabsList className="bg-zinc-200">
-              <TabsTrigger value="revenue">Revenue</TabsTrigger>
-              <TabsTrigger value="revenueb">Performance</TabsTrigger>
-              <TabsTrigger value="revenuec">Passengers</TabsTrigger>
-              <TabsTrigger value="revenued">Routes</TabsTrigger>
-            </TabsList>
+            <CardContent className="mt-2">
+              <TabsList className="bg-zinc-200">
+                <TabsTrigger value="revenue">Revenue</TabsTrigger>
+                <TabsTrigger value="performance">Performance</TabsTrigger>
+                <TabsTrigger value="passengers">Passengers</TabsTrigger>
+                <TabsTrigger value="routes">Routes</TabsTrigger>
+              </TabsList>
+            </CardContent>
+            <TabsContent value="revenue" className="">
+              <Revenue />
+            </TabsContent>
+            <TabsContent value="performance" className="">
+              <Performance />
+            </TabsContent>
+            <TabsContent value="passengers" className="">
+              <Passengers />
+            </TabsContent>
+            <TabsContent value="routes" className="">
+              <Routes />
+            </TabsContent>
           </Tabs>
         </div>
-        <CardContent className="w-full grid grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Revenue by Route</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge>RX1</Badge> <span>Rolleston North to city</span>
-                </div>{" "}
-                <p className="text-green-600">$2,117</p>
-              </p>
-              <p className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge>RX1</Badge> <span>Rolleston North to city</span>
-                </div>{" "}
-                <p className="text-green-600">$2,117</p>
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Monthly Trends</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="flex items-center justify-between">
-                <div className="">January</div>
-                <p className="text-green-600">$2,117</p>
-              </p>
-              <p className="flex items-center justify-between">
-                <div className="">January</div>
-                <p className="text-green-600">$2,117</p>
-              </p>
-              <p className="flex items-center justify-between">
-                <div className="">January</div>
-                <p className="text-green-600">$2,117</p>
-              </p>
-
-              <p className="flex items-center justify-between">
-                <div className="">January</div>
-                <p className="text-green-600">$2,117</p>
-              </p>
-            </CardContent>
-          </Card>
-        </CardContent>
       </div>
     </main>
   );

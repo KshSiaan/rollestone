@@ -20,7 +20,7 @@ export default function Layout({
       <AdminSidebar variant="sidebar" />
       <SidebarInset>
         <AdminHeader />
-        <div className="flex flex-1 flex-col bg-[#E8F1FB]">{children}</div>
+        <div className="flex flex-1 flex-col bg-secondary">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

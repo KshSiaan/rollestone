@@ -12,14 +12,10 @@ import {
   CoinsIcon,
   EyeIcon,
   LayoutDashboardIcon,
-  MapPinIcon,
-  MessageSquareIcon,
   MonitorCogIcon,
   SearchIcon,
   SlidersVerticalIcon,
-  TrendingUpIcon,
-  TriangleAlert,
-  WaypointsIcon,
+
 } from "lucide-react";
 import React from "react";
 import {
@@ -38,7 +34,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 export default function Page() {
   const cardData = [
