@@ -2,12 +2,18 @@ import AdminHeader from "@/components/admin-header";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) {
+    return notFound();
+  }
   return (
     <SidebarProvider
       style={

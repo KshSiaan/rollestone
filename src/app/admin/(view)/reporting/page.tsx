@@ -18,24 +18,24 @@ import Routes from "./routes";
 export default function Page() {
   const cardData = [
     {
-      title: "Total Users",
+      title: "Todays Revenue",
       value: "1,247",
-      footer: "+23 this week",
+      footer: "",
     },
     {
       title: "Active Cards",
       value: "117",
-      footer: "96% of users",
+      footer: "",
     },
     {
       title: "Total Balance",
       value: "$12,4565",
-      footer: "Across all accounts",
+      footer: "",
     },
     {
       title: "Suspended",
       value: "4",
-      footer: "Across suspended",
+      footer: "",
     },
   ];
 

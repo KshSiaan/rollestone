@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import TanstackProvider from "@/provider/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -19,7 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className} antialiased`}>{children}</body>
+      <body className={`${montserrat.className} antialiased`}>
+        <TanstackProvider>
+          {children}
+          <Toaster />
+        </TanstackProvider>
+      </body>
     </html>
   );
 }

@@ -1,34 +1,40 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { idk } from "@/lib/utils";
 import React from "react";
 
-const DriverProfilePopup = () => {
+const DriverProfilePopup = ({ data }: { data: idk }) => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <Avatar className="size-10">
-            <AvatarImage src={"https://avatar.iran.liara.run/public"} />
+            <AvatarImage
+              src={data.user.avatar ?? "https://avatar.iran.liara.run/public"}
+            />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800">John Smith</h2>
-            <p className="text-gray-500">Route RX2</p>
+          <div className="pl-2">
+            <h2 className="text-lg font-semibold text-gray-800">
+              {data.user.name}
+            </h2>
+            <p className="text-gray-500 text-xs">{data.user.email}</p>
           </div>
         </div>
         <div className="w-4 h-4 bg-green-500 rounded-full"></div>{" "}
         {/* Green dot */}
       </div>
-
       <div className="space-y-3 mb-6">
         <div className="flex justify-between items-center">
           <span className="text-gray-600">Experience :</span>
-          <span className="font-medium text-gray-800">5 years</span>
+          <span className="font-medium text-gray-800">
+            {data.experience_years} years
+          </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-gray-600">Rating :</span>
           <div className="flex items-center">
             <span className="text-yellow-400 text-xl mr-1">⭐</span>
-            <span className="font-medium text-gray-800">4.8</span>
+            <span className="font-medium text-gray-800">{data.rating}</span>
           </div>
         </div>
         <div className="flex justify-between items-center">

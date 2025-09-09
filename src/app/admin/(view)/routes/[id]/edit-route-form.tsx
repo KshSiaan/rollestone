@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Plus, X, Clock } from "lucide-react";
+import { Plus, X, Clock, Loader2Icon } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -17,13 +17,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation } from "@tanstack/react-query";
-import { createRouteApi } from "@/api/admin";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getRouteByIdApi, updateRouteApi } from "@/api/admin";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import { idk } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LocationPicker from "@/components/core/location-picker";
+import { useEffect } from "react";
 
 /* -------------------------
    Zod schema (consistent)
@@ -60,17 +61,60 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-/* -------------------------
-   Component
-   ------------------------- */
-export default function AddRouteForm() {
+export default function EditRouteForm({ id }: { id: string }) {
   const navig = useRouter();
+
   const [cookies] = useCookies(["token"]);
+  const { data, isPending } = useQuery({
+    queryKey: ["route", id],
+    queryFn: (): idk => {
+      return getRouteByIdApi({ id, companyID: "1", token: cookies.token });
+    },
+  });
+  /* 👇 hydrate form when query data arrives */
+  useEffect(() => {
+    if (!data?.data) return;
+
+    const route = data.data;
+
+    form.reset({
+      routeName: route.name ?? "",
+      tripNum: route.route_prefix ?? "",
+      googleMapLink: route.google_map_link ?? "",
+      trackedItem: "none",
+      timePoints: route.stops.map((stop: idk) => ({
+        id: stop.id?.toString(),
+        location: stop.location_name ?? "",
+        time: stop["minutes from start"]?.toString() ?? "0",
+        latitude: stop.latitude ?? "",
+        longitude: stop.longitude ?? "",
+      })),
+      fares: (() => {
+        const grouped: Record<string, { cash?: string; userApp?: string }> = {};
+
+        for (const f of route.fares) {
+          const type = f.passenger_type;
+          if (!grouped[type]) grouped[type] = {};
+          if (f.payment_method === "Cash") grouped[type].cash = f.amount;
+          if (f.payment_method === "Wallet") grouped[type].userApp = f.amount;
+        }
+
+        return Object.entries(grouped).map(([type, vals]) => ({
+          id: `f-${type}`,
+          type,
+          cash: vals.cash ?? "0.00",
+          userApp: vals.userApp ?? "0.00",
+        }));
+      })(),
+      status: route.status === 1 ? "active" : "inactive",
+    });
+  }, [data]);
   const { mutate } = useMutation({
     mutationKey: ["route-create"],
-    mutationFn: (data: idk) => {
-      return createRouteApi({
-        body: data,
+    mutationFn: (payload: idk) => {
+      return updateRouteApi({
+        body: payload,
+        id,
         companyID: "1",
         token: cookies.token,
       });
@@ -153,16 +197,29 @@ export default function AddRouteForm() {
           : Number(fare.userApp),
       })),
     };
-
-    console.log(payload);
     mutate(payload);
   }
+
+  if (isPending) {
+    return (
+      <main className="p-6">
+        <div className="p-8 w-full mx-auto bg-white rounded-lg shadow-md">
+          <h1 className="text-2xl font-semibold mb-6">Edit Route</h1>
+          <div className="flex flex-col justify-center items-center gap-6 mt-12">
+            <Loader2Icon className="animate-spin" />
+            <h4>Loading Data...</h4>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  console.log(data);
 
   return (
     <main className="p-6">
       <div className="p-8 w-full mx-auto bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-semibold mb-6">Add New Routes</h1>
-
+        <h1 className="text-2xl font-semibold mb-6">Edit Route</h1>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* route/trip */}
@@ -483,7 +540,7 @@ export default function AddRouteForm() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Add</Button>
+              <Button type="submit">Update</Button>
             </div>
           </form>
         </Form>

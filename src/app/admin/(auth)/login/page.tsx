@@ -1,17 +1,84 @@
 "use client";
 
 import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { loginApi } from "@/api/auth";
+import { idk } from "@/lib/utils";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/navigation";
+
+const loginSchema = z.object({
+  email: z.string(),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  remember: z.boolean().optional(),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [, setCookie] = useCookies(["token"]);
+  const navig = useRouter();
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (data: Omit<LoginFormValues, "remember">) => {
+      return loginApi({ body: data, companyID: "1" });
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (data: idk) => {
+      if (!data.data.access_token) {
+        toast.error("Something went wrong, please try again");
+        return;
+      }
+      try {
+        setCookie("token", data.data.access_token);
+        navig.push("/admin/dashboard");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to set cookie. Please log in again");
+      }
+      toast.success(data.message ?? "Login successful");
+    },
+  });
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      remember: false,
+    },
+  });
+
+  function onSubmit(values: LoginFormValues) {
+    console.log("Login form values:", values);
+    const payload = {
+      email: values.email,
+      password: values.password,
+    };
+    mutate(payload);
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
@@ -39,75 +106,102 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <form className="space-y-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="william047@gmail.com"
-                  className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Password
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-12"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember" />
-                  <Label
-                    htmlFor="remember"
-                    className="text-sm text-gray-600 cursor-pointer"
-                  >
-                    Remember password
-                  </Label>
-                </div>
-                <Link
-                  href="/admin/forgot"
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              <Button
-                asChild
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
               >
-                <Link href={"/admin/dashboard"}>Log in</Link>
-              </Button>
-            </form>
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="william047@gmail.com"
+                          className="h-12"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Password */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            className="h-12 pr-12"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-5 w-5" />
+                            ) : (
+                              <Eye className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Remember Me + Forgot */}
+                <div className="flex items-center justify-between">
+                  <FormField
+                    control={form.control}
+                    name="remember"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel className="text-sm font-normal cursor-pointer">
+                          Remember password
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Link
+                    href="/admin/forgot"
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  className="w-full cursor-grab active:cursor-grabbing h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
+                  disabled={isPending}
+                >
+                  {isPending ? "Logging in.." : "Log in"}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </div>
