@@ -1,5 +1,4 @@
 import { base_server } from "./config";
-
 export function dateExtractor(x: string): string {
     if (!x) return "N/A"; // handle empty/null input
     const date = new Date(x);

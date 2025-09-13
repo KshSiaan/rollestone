@@ -524,7 +524,7 @@ export const createPassengerApi = async ({
     email: string;
     password: string;
     password_confirmation: string;
-    rider_type: string | string[];
+    rider_type: "adult"|"child"|"student";
     phone_number?: string;
     address?: string;
   };
@@ -868,6 +868,19 @@ export const getRouteStatisticsApi = async ({
   token?: string;
 }) => {
   return howl("/v1/admin/reports/route-statistics", {
+    method: "GET",
+    headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
+  });
+};
+export const getRouteAnalytics = async ({
+  companyID,
+  token,
+}: {
+  companyID: string;
+  token?: string;
+}) => {
+  return howl("/v1/admin/reports/passenger-analytics", {
     method: "GET",
     headers: { "X-Company-ID": String(companyID) },
     ...(token && { token }),

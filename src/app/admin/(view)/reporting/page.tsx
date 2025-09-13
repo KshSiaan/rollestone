@@ -1,61 +1,32 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { DownloadIcon, FileIcon, LayoutDashboardIcon } from "lucide-react";
-import React from "react";
+import {
+  DownloadIcon,
+  FileIcon,
+  LayoutDashboardIcon,
+  Loader2Icon,
+} from "lucide-react";
+import React, { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Revenue from "./revenue";
 import Performance from "./performance";
 import Passengers from "./passengers";
 import Routes from "./routes";
+import Statistics from "./statistics";
 
 export default function Page() {
-  const cardData = [
-    {
-      title: "Todays Revenue",
-      value: "1,247",
-      footer: "",
-    },
-    {
-      title: "Active Cards",
-      value: "117",
-      footer: "",
-    },
-    {
-      title: "Total Balance",
-      value: "$12,4565",
-      footer: "",
-    },
-    {
-      title: "Suspended",
-      value: "4",
-      footer: "",
-    },
-  ];
-
   return (
     <main className="h-full w-full p-2">
-      <div className="w-full grid grid-cols-4 gap-6">
-        {cardData.map((card, index) => (
-          <Card key={index} className={`gap-2`}>
-            <CardHeader className="">
-              <CardTitle>{card.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-4xl font-bold">{card.value}</p>
-            </CardContent>
-            <CardFooter className="text-sm">
-              <p>{card.footer}</p>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+      <Suspense
+        fallback={
+          <div className={`flex justify-center items-center h-24 mx-auto`}>
+            <Loader2Icon className={`animate-spin`} />
+          </div>
+        }
+      >
+        <Statistics />
+      </Suspense>
       <div className="rounded-md py-4! mt-6">
         <CardHeader className="flex flex-row justify-between items-center">
           <div className="">
@@ -89,16 +60,56 @@ export default function Page() {
               </TabsList>
             </CardContent>
             <TabsContent value="revenue" className="">
-              <Revenue />
+              <Suspense
+                fallback={
+                  <div
+                    className={`flex justify-center items-center h-24 mx-auto`}
+                  >
+                    <Loader2Icon className={`animate-spin`} />
+                  </div>
+                }
+              >
+                <Revenue />
+              </Suspense>
             </TabsContent>
             <TabsContent value="performance" className="">
-              <Performance />
+              <Suspense
+                fallback={
+                  <div
+                    className={`flex justify-center items-center h-24 mx-auto`}
+                  >
+                    <Loader2Icon className={`animate-spin`} />
+                  </div>
+                }
+              >
+                <Performance />
+              </Suspense>
             </TabsContent>
             <TabsContent value="passengers" className="">
-              <Passengers />
+              <Suspense
+                fallback={
+                  <div
+                    className={`flex justify-center items-center h-24 mx-auto`}
+                  >
+                    <Loader2Icon className={`animate-spin`} />
+                  </div>
+                }
+              >
+                <Passengers />
+              </Suspense>
             </TabsContent>
             <TabsContent value="routes" className="">
-              <Routes />
+              <Suspense
+                fallback={
+                  <div
+                    className={`flex justify-center items-center h-24 mx-auto`}
+                  >
+                    <Loader2Icon className={`animate-spin`} />
+                  </div>
+                }
+              >
+                <Routes />
+              </Suspense>
             </TabsContent>
           </Tabs>
         </div>

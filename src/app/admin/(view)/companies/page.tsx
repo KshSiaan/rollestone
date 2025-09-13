@@ -1,34 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  EditIcon,
-  EyeIcon,
-  PlusIcon,
-  SearchIcon,
-} from "lucide-react";
+import { Loader2Icon, PlusIcon, SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+
 import Link from "next/link";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import CompanyDetails from "./company-details";
+import CompanyTable from "./company-table";
+
 export default function Page() {
   return (
     <main className="p-6">
@@ -52,75 +30,17 @@ export default function Page() {
           </div>
         </div>
         <CardContent className="">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Company</TableHead>
-                <TableHead>Admin</TableHead>
-                <TableHead>Subdomain</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({ length: 3 }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    <div className="w-fit flex gap-2">
-                      <Avatar className="border-2 size-10 border-blue-400">
-                        <AvatarImage
-                          src={"https://avatar.iran.liara.run/public"}
-                        />
-                        <AvatarFallback>UI</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col justify-start items-start">
-                        <h4 className="font-semibold">Metro Transit</h4>
-                        <p className="text-xs">Contact@gmail.com</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>Contact@gmail.com</TableCell>
-                  <TableCell>Metro-transit.company.app</TableCell>
-                  <TableCell className="text-green-600">
-                    <Badge variant={"success"}>Active</Badge>
-                  </TableCell>
-                  <TableCell className="font-bold">
-                    <Button variant={"ghost"} asChild>
-                      <Link href={"/admin/companies/edit"}>
-                        <EditIcon />
-                      </Link>
-                    </Button>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant={"ghost"}>
-                          <EyeIcon />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="min-w-[60dvw]">
-                        <DialogHeader className="border-b pb-2">
-                          <DialogTitle>Company Details</DialogTitle>
-                        </DialogHeader>
-                        <CompanyDetails />
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <Suspense
+            fallback={
+              <div className={`flex justify-center items-center h-24 mx-auto`}>
+                <Loader2Icon className={`animate-spin`} />
+              </div>
+            }
+          >
+            <CompanyTable />
+          </Suspense>
         </CardContent>
       </Card>
-      <div className=" flex items-center justify-center mt-8 gap-2">
-        <Button variant={"outline"}>
-          <ChevronLeftIcon />
-        </Button>
-        <Button variant={"outline"}>1</Button>
-        <Button variant={"outline"}>2</Button>
-        <Button variant={"outline"}>3</Button>
-        <Button variant={"outline"}>
-          <ChevronRightIcon />
-        </Button>
-      </div>
     </main>
   );
 }

@@ -2,35 +2,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  BusFrontIcon,
-  CheckCircle2,
-  ChevronLeftIcon,
-  ChevronRight,
-  EyeIcon,
-  LayoutDashboardIcon,
-  MapIcon,
-  MapPinIcon,
-  MessageSquareIcon,
-  NavigationIcon,
-  PauseIcon,
-  RouteIcon,
-  SearchIcon,
-  SlidersVerticalIcon,
-  StarIcon,
-  TrendingUpIcon,
-  TriangleAlert,
-  UserCheckIcon,
-  UserPlusIcon,
-  WaypointsIcon,
-  XCircleIcon,
-} from "lucide-react";
-import React from "react";
+
+import React, { Suspense } from "react";
 import {
   Select,
   SelectContent,
@@ -38,18 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import MessageForm from "./message-form";
 import {
   Dialog,
@@ -61,6 +29,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { Loader2Icon, MessageSquareIcon } from "lucide-react";
+import Recents from "./recents";
 export default function Page() {
   return (
     <main className="h-full w-full p-6">
@@ -157,40 +127,15 @@ export default function Page() {
         </Dialog>
       </div>
       <MessageForm />
-      <Card className="bg-background rounded-md py-4! mt-6">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <div className="">
-            <CardTitle className="flex items-center gap-2 text-xl mb-2">
-              Recent Messages
-            </CardTitle>
+      <Suspense
+        fallback={
+          <div className={`flex justify-center items-center h-24 mx-auto`}>
+            <Loader2Icon className={`animate-spin`} />
           </div>
-        </CardHeader>
-        <CardContent>
-          <Card className="p-4 flex flex-col gap-4">
-            {/* Header with Route Name and Action Buttons */}
-            <div className="flex justify-between items-center">
-              <div className="flex flex-row justify-center items-center gap-2 w-fit text-sm">
-                <Badge variant={"outline"}>Driver Alert</Badge>
-                <p>to all Drivers </p>
-              </div>
-              <div className="flex gap-2 items-center text-sm font-semibold">
-                <Button
-                  variant="outline"
-                  className="bg-green-500 text-white hover:bg-green-600"
-                >
-                  Active
-                </Button>
-                <p>2 HOURS AGO</p>
-              </div>
-            </div>
-
-            {/* Duration */}
-            <p className="text-gray-600">
-              Traffic delay on Route 1 - adjust schedule accordingly
-            </p>
-          </Card>
-        </CardContent>
-      </Card>
+        }
+      >
+        <Recents />
+      </Suspense>
     </main>
   );
 }

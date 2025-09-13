@@ -36,6 +36,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getPassengersApi } from "@/api/admin";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
+import CreateUser from "./create-user";
+import TopUp from "./top-up";
+import PassengerState from "./passenger-state";
 export default function PassengerTable() {
   const [search, setSearch] = useState<string>("");
   const [cookies] = useCookies(["token"]);
@@ -66,10 +69,20 @@ export default function PassengerTable() {
                 }}
               />
             </div>
-            <Button>
-              <UserPlus2Icon />
-              Create User
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <UserPlus2Icon />
+                  Create User
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create New User</DialogTitle>
+                </DialogHeader>
+                <CreateUser />
+              </DialogContent>
+            </Dialog>
           </div>
         </CardHeader>
         <CardContent>
@@ -123,12 +136,32 @@ export default function PassengerTable() {
                           <PassengerDetails data={x} />
                         </DialogContent>
                       </Dialog>
-                      <Button variant={"ghost"}>
-                        <CoinsIcon />
-                      </Button>
-                      <Button variant={"ghost"}>
-                        <MonitorCogIcon />
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant={"ghost"}>
+                            <CoinsIcon />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Top Up Balance</DialogTitle>
+                          </DialogHeader>
+                          <TopUp id={x.id} />
+                        </DialogContent>
+                      </Dialog>
+                      {/* <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant={"ghost"}>
+                            <MonitorCogIcon />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Statement for {x.name}</DialogTitle>
+                          </DialogHeader>
+                          <PassengerState data={x} />
+                        </DialogContent>
+                      </Dialog> */}
                     </TableCell>
                   </TableRow>
                 ))

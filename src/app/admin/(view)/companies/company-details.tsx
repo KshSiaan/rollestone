@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CheckCircle2,
   DollarSign,
@@ -10,10 +12,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { idk } from "@/lib/utils";
 
-export default function CompanyDetails() {
+export default function CompanyDetails({ data }: { data: idk }) {
+  const company = data || {};
+  const user = company.user || {};
+
   return (
-    <div className="">
+    <div>
       <div className="grid md:grid-cols-3 gap-6">
         {/* Left Column: Company Details and System Access */}
         <div className="md:col-span-2 grid gap-6">
@@ -22,21 +28,29 @@ export default function CompanyDetails() {
             <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Avatar className="size-20">
                 <AvatarImage
-                  src="https://avatar.iran.liara.run/public"
-                  alt="Company Logo"
+                  src={user.avatar || "https://avatar.iran.liara.run/public"}
+                  alt={company.company_name || "Company Logo"}
                 />
-                <AvatarFallback>CO</AvatarFallback>
+                <AvatarFallback>
+                  {company.company_name?.slice(0, 2).toUpperCase() || "N/A"}
+                </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
                 <div className="flex items-center gap-2">
-                  <CardTitle className="text-xl">Metro Transit</CardTitle>
-                  <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                    Active
+                  <CardTitle className="text-xl">
+                    {company.company_name || "N/A"}
+                  </CardTitle>
+                  <Badge
+                    className={
+                      company.status === "active"
+                        ? "bg-green-100 text-green-700 hover:bg-green-100"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-100"
+                    }
+                  >
+                    {company.status || "N/A"}
                   </Badge>
                 </div>
-                <p className="text-sm text-gray-500">
-                  123 Transit Ave, Metropolis, St 12345
-                </p>
+                <p className="text-sm text-gray-500">{user.address || "N/A"}</p>
               </div>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 pt-4 border-t">
@@ -45,27 +59,27 @@ export default function CompanyDetails() {
                   Company Email
                 </p>
                 <p className="text-sm text-gray-500">
-                  contact@metrotransit.com
+                  {company.contact_email || "N/A"}
                 </p>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">
                   Phone Number
                 </p>
-                <p className="text-sm text-gray-500">+1 (555) 123-4567</p>
+                <p className="text-sm text-gray-500">
+                  {user.phone_number || "N/A"}
+                </p>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">
                   Main Admin
                 </p>
-                <p className="text-sm text-gray-500">
-                  contact@metrotransit.com
-                </p>
+                <p className="text-sm text-gray-500">{user.email || "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">Subdomain</p>
                 <p className="text-sm text-gray-500">
-                  metro-transit.company.app
+                  {company.subdomain || "N/A"}
                 </p>
               </div>
             </CardContent>
@@ -77,6 +91,7 @@ export default function CompanyDetails() {
               <CardTitle className="text-xl">System Access</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
+              {/* Example access rules, since your API doesn’t provide these */}
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
                 <span className="text-sm text-gray-700">Admin Dashboard</span>
@@ -111,7 +126,7 @@ export default function CompanyDetails() {
           </Card>
         </div>
 
-        {/* Right Column: Key Statistics */}
+        {/* Right Column: Key Statistics (placeholder since no stats in API) */}
         <div className="md:col-span-1">
           <Card>
             <CardHeader>
@@ -124,7 +139,7 @@ export default function CompanyDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Active Drivers</p>
-                  <p className="text-lg font-semibold">42</p>
+                  <p className="text-lg font-semibold">N/A</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 border rounded-lg">
@@ -133,7 +148,7 @@ export default function CompanyDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Total Routes</p>
-                  <p className="text-lg font-semibold">18</p>
+                  <p className="text-lg font-semibold">N/A</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 border rounded-lg">
@@ -142,7 +157,7 @@ export default function CompanyDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Passengers (Month)</p>
-                  <p className="text-lg font-semibold">12,450</p>
+                  <p className="text-lg font-semibold">N/A</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 border rounded-lg">
@@ -151,7 +166,7 @@ export default function CompanyDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Revenue (Month)</p>
-                  <p className="text-lg font-semibold">$86,200</p>
+                  <p className="text-lg font-semibold">N/A</p>
                 </div>
               </div>
             </CardContent>

@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import React from "react";
 
-export default function Performance() {
+export default async function Performance() {
+  // const call = await get
   return (
     <CardContent>
       <Card>
