@@ -59,7 +59,7 @@ export default function DriverList() {
   });
   return (
     <>
-      <Card className="bg-background rounded-md py-4! mt-6">
+      <Card className="bg-background rounded-md py-4!">
         <CardHeader className="flex flex-row justify-between items-center">
           <div className="">
             <CardTitle className="flex items-center gap-2 text-xl mb-2">

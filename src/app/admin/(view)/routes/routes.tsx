@@ -1,20 +1,11 @@
 "use client";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  CheckCircle2,
   ChevronLeftIcon,
   ChevronRight,
   Loader2Icon,
-  MapIcon,
-  NavigationIcon,
   RouteIcon,
   SearchIcon,
   UserPlusIcon,
@@ -45,62 +36,7 @@ export default function Routes() {
   }
   return (
     <>
-      <div className="w-full grid grid-cols-4 gap-6">
-        <Card className="gap-0">
-          <CardHeader className="pb-2">
-            <div className="flex items-center">
-              <RouteIcon className="text-green-500 w-6 h-6 mr-2" />
-              <CardTitle className="text-2xl font-semibold">18</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600 text-lg">
-              Active Routes
-            </CardDescription>
-          </CardContent>
-        </Card>
-        <Card className="gap-0">
-          <CardHeader className="pb-2">
-            <div className="flex items-center">
-              <MapIcon className="text-blue-500 w-6 h-6 mr-2" />
-              <CardTitle className="text-2xl font-semibold">247</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600 text-lg">
-              Total Stops
-            </CardDescription>
-          </CardContent>
-        </Card>
-
-        <Card className="gap-0">
-          <CardHeader className="pb-2">
-            <div className="flex items-center">
-              <NavigationIcon className="text-muted-foreground w-6 h-6 mr-2" />
-              <CardTitle className="text-2xl font-semibold">456 Km</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600 text-lg">
-              Daily Trips
-            </CardDescription>
-          </CardContent>
-        </Card>
-        <Card className="gap-0">
-          <CardHeader className="pb-2">
-            <div className="flex items-center">
-              <CheckCircle2 className="text-amber-500 w-6 h-6 mr-2" />
-              <CardTitle className="text-2xl font-semibold">89%</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600 text-lg">
-              Avg On time
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </div>
-      <Card className="bg-background rounded-md py-4! mt-6">
+      <Card className="bg-background rounded-md py-4!">
         <CardHeader className="flex flex-row justify-between items-center">
           <div className="">
             <CardTitle className="flex items-center gap-2 text-xl mb-2">

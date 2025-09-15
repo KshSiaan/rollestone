@@ -1,19 +1,19 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
 
-import { PauseIcon, StarIcon, UserCheckIcon, XCircleIcon } from "lucide-react";
+// import { PauseIcon, StarIcon, UserCheckIcon, XCircleIcon } from "lucide-react";
 import React from "react";
 import DriverList from "./driver-list";
 
 export default function Page() {
   return (
     <main className="h-full w-full p-2">
-      <div className="w-full grid grid-cols-4 gap-6">
+      {/* <div className="w-full grid grid-cols-4 gap-6">
         <Card className="gap-0">
           <CardHeader className="pb-2">
             <div className="flex items-center">
@@ -67,7 +67,7 @@ export default function Page() {
             </CardDescription>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
       <DriverList />
     </main>
   );

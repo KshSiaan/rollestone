@@ -10,7 +10,6 @@ import React, { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Revenue from "./revenue";
-import Performance from "./performance";
 import Passengers from "./passengers";
 import Routes from "./routes";
 import Statistics from "./statistics";
@@ -54,7 +53,6 @@ export default function Page() {
             <CardContent className="mt-2">
               <TabsList className="bg-zinc-200">
                 <TabsTrigger value="revenue">Revenue</TabsTrigger>
-                <TabsTrigger value="performance">Performance</TabsTrigger>
                 <TabsTrigger value="passengers">Passengers</TabsTrigger>
                 <TabsTrigger value="routes">Routes</TabsTrigger>
               </TabsList>
@@ -70,19 +68,6 @@ export default function Page() {
                 }
               >
                 <Revenue />
-              </Suspense>
-            </TabsContent>
-            <TabsContent value="performance" className="">
-              <Suspense
-                fallback={
-                  <div
-                    className={`flex justify-center items-center h-24 mx-auto`}
-                  >
-                    <Loader2Icon className={`animate-spin`} />
-                  </div>
-                }
-              >
-                <Performance />
               </Suspense>
             </TabsContent>
             <TabsContent value="passengers" className="">
