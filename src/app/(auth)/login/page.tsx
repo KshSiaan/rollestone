@@ -2,12 +2,24 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useCookies } from "react-cookie";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getCompaniesApi, loginApi } from "@/api/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { idk } from "@/lib/utils";
+import { blankImg } from "@/lib/config";
 
 export default function Page() {
   const [driverId, setDriverId] = useState<string[]>(["", "", "", ""]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCompany, setSelectedCompany] = useState<number>(1);
 
   const handleKeypadClick = (value: string) => {
     if (currentIndex < 4) {
@@ -18,18 +30,37 @@ export default function Page() {
     }
   };
 
+  const { data, isPending }: idk = useQuery({
+    queryKey: ["companies"],
+    queryFn: getCompaniesApi,
+  });
+
+  // const { mutate } = useMutation({
+  //   mutationKey: ["login"],
+  //   mutationFn: (data: { email: string; password: string }) => {
+  //     return loginApi({
+  //       body: data,
+  //       companyID: "2",
+  //     });
+  //   },
+  // });
+
+  useEffect(() => {
+    // console.log("current_INXDEX ", currentIndex);
+    // console.log("DID ", driverId);
+
+    if (currentIndex >= 4) {
+      console.log(data);
+    }
+    if (!isPending) {
+      console.log(data);
+
+      // console.log(data.data[0].company_id === selectedCompany);
+    }
+  }, [driverId, isPending]);
+
   const handleInputClick = (index: number) => {
     setCurrentIndex(index);
-  };
-
-  const handleClear = () => {
-    if (currentIndex > 0) {
-      const newDriverId = [...driverId];
-      const targetIndex = currentIndex - 1;
-      newDriverId[targetIndex] = "";
-      setDriverId(newDriverId);
-      setCurrentIndex(targetIndex);
-    }
   };
 
   const keypadButtons = [
@@ -46,7 +77,37 @@ export default function Page() {
           <div className="w-full text-center space-y-6 flex flex-col item-center justify-center">
             {/* Logo */}
             <div className="w-[200px] mx-auto">
-              <Image alt="logo" src={"/logo.png"} height={300} width={900} />
+              {/* <DropdownMenu>
+                <DropdownMenuTrigger className="border rounded-lg shadow">
+                  {!isPending &&
+                    data.data.find((x: idk) => {
+                      if (x.company_id === selectedCompany) {
+                        return (
+                          <Image
+                            alt="logo"
+                            src={x.company_logo}
+                            height={300}
+                            width={900}
+                          />
+                        );
+                      }
+                    })}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {!isPending &&
+                    data.data.map((x: idk) => (
+                      <DropdownMenuItem key={x.company_id}>
+                        <Image
+                          alt="logo"
+                          src={x.company_logo ?? blankImg(200, 600)}
+                          height={300}
+                          width={900}
+                          className="w-[200px]"
+                        />
+                      </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu> */}
             </div>
 
             {/* Title */}

@@ -10,6 +10,14 @@ import { getSettingsApi } from "@/api/admin";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 import StripeForm from "./stripe-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import FareUpdate from "./fare-update";
 
 export default function SystemSettingsPage() {
   const [{ token }] = useCookies(["token"]);
@@ -19,6 +27,7 @@ export default function SystemSettingsPage() {
       return getSettingsApi({ companyID: "1", token });
     },
   });
+
   if (isPending) {
     return (
       <section className={`flex justify-center items-center h-full mx-auto`}>
@@ -44,7 +53,6 @@ export default function SystemSettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Stripe Integration Card */}
           <StripeForm />
-
           {/* Scheduling System API Card */}
           <Card className="shadow-sm rounded-lg hidden">
             <CardHeader className="pb-4">
@@ -86,6 +94,7 @@ export default function SystemSettingsPage() {
               <Button
                 variant="outline"
                 className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 bg-transparent"
+                type="button"
               >
                 Connect & Test
               </Button>
@@ -223,7 +232,27 @@ export default function SystemSettingsPage() {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center justify-between text-lg font-medium">
               Fare Rules
-              <Pencil className="w-4 h-4 text-gray-500" />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    className="cursor-pointer"
+                    size={"icon"}
+                  >
+                    <Pencil className="w-4 h-4 text-gray-500" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Update fare rules</DialogTitle>
+                  </DialogHeader>
+                  <FareUpdate
+                    current={Number(
+                      parseFloat(data.data.fare_rules).toFixed(2)
+                    )}
+                  />
+                </DialogContent>
+              </Dialog>
             </CardTitle>
           </CardHeader>
           <CardContent>

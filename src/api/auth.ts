@@ -94,4 +94,8 @@ export const getProfileApi = async ({ companyID }: { companyID: string }) => {
   });
 };
 
+// >>>>>>>>>>>> COMPANY <<<<<<<<<<<<<<<<<
 
+export const getCompaniesApi = async () => {
+  return howl("/v1/companies");
+};

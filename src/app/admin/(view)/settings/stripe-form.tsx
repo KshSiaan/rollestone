@@ -1,5 +1,4 @@
 "use client";
-
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +15,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getSettingsApi,
+  testStripeSettingsApi,
+  updateSettingsApi,
+} from "@/api/admin";
+import { useCookies } from "react-cookie";
+import { idk } from "@/lib/utils";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { Loader2Icon } from "lucide-react";
 
 // ✅ Zod schema
 const stripeSchema = z.object({
@@ -27,6 +37,48 @@ const stripeSchema = z.object({
 type StripeFormValues = z.infer<typeof stripeSchema>;
 
 export default function StripeForm() {
+  const [{ token }] = useCookies(["token"]);
+  const qCl = useQueryClient();
+  const [whd, setWhd] = useState("");
+  const { data, isPending } = useQuery({
+    queryKey: ["settings"],
+    queryFn: (): idk => {
+      return getSettingsApi({ companyID: "1", token });
+    },
+  });
+  const { mutate } = useMutation({
+    mutationKey: ["updateSettings"],
+    mutationFn: (data: idk) => {
+      return updateSettingsApi({ body: data, companyID: "1", token });
+    },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (res: idk) => {
+      toast.success(res.message ?? "Successfully updated the settings");
+      qCl.invalidateQueries({
+        queryKey: ["settings"],
+      });
+    },
+  });
+  const { mutate: tester, isPending: testPending } = useMutation({
+    mutationKey: ["test_stripe"],
+    mutationFn: () => {
+      return testStripeSettingsApi({ companyID: "1", token });
+    },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (res: idk) => {
+      toast.success(res.message ?? "Test was a success");
+    },
+  });
+
+  useEffect(() => {
+    if (!isPending) {
+      setWhd(data.data.webhook_endpoint);
+    }
+  }, [isPending]);
   const form = useForm<StripeFormValues>({
     resolver: zodResolver(stripeSchema),
     defaultValues: {
@@ -38,6 +90,7 @@ export default function StripeForm() {
 
   const onSubmit = (values: StripeFormValues) => {
     console.log("Stripe Form Submitted:", values);
+    mutate(values);
   };
 
   return (
@@ -112,11 +165,7 @@ export default function StripeForm() {
             <FormItem>
               <FormLabel>Webhook Endpoint</FormLabel>
               <FormControl>
-                <Input
-                  type="url"
-                  value="https://busticketing.com/stripe/webhook"
-                  readOnly
-                />
+                <Input type="url" value={whd} readOnly />
               </FormControl>
             </FormItem>
 
@@ -127,10 +176,15 @@ export default function StripeForm() {
                 variant="outline"
                 className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 bg-transparent"
                 onClick={() => {
-                  console.log("Testing connection with:", form.getValues());
+                  tester();
                 }}
+                disabled={testPending}
               >
-                Test Connection
+                {testPending ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  "Test Connection"
+                )}
               </Button>
             </div>
           </form>
