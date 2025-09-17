@@ -3,6 +3,19 @@ import { howl } from "@/lib/utils"
 // >>>>>>>>>>>>>>>>> AUTH <<<<<<<<<<<<<<<<<<<<
 
 
+
+export const driverLoginApi = async ({
+  body,
+  companyID,
+}: { body: { staff_number: string; pin_code: string,fcm_token?:string }; companyID: string }) => {
+  return howl("/v1/auth/login", {
+    method: "POST",
+    body,
+    headers: { "X-Company-ID": String(companyID) },
+  });
+};
+
+
 export const loginApi = async ({
   body,
   companyID,

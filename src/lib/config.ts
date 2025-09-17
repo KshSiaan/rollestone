@@ -13,12 +13,15 @@ export const apiConfig = {
   isDevelopment: onDev,
 }; 
 
-export const blankImg = (x?:number|string|undefined,y?:number|string|undefined)=>{
-    if (x) {
-        return `https://placehold.co/${x}x${x}/png`
-    }
-    if (x&&y) {
-        return `https://placehold.co/${x}x${y}/png`
-    }
-    return `https://placehold.co/500x500/png`
-}
+export const blankImg = (
+  x?: number | string,
+  y?: number | string
+) => {
+  if (x && y) {
+    return `https://placehold.co/${x}x${y}/png`;
+  }
+  if (x) {
+    return `https://placehold.co/${x}x${x}/png`;
+  }
+  return `https://placehold.co/500x500/png`;
+};

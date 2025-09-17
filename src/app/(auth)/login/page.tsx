@@ -4,9 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useCookies } from "react-cookie";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCompaniesApi, loginApi } from "@/api/auth";
+
+import { useQuery } from "@tanstack/react-query";
+import { getCompaniesApi } from "@/api/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { idk } from "@/lib/utils";
 import { blankImg } from "@/lib/config";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [driverId, setDriverId] = useState<string[]>(["", "", "", ""]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCompany, setSelectedCompany] = useState<number>(1);
-
+  const navig = useRouter();
   const handleKeypadClick = (value: string) => {
     if (currentIndex < 4) {
       const newDriverId = [...driverId];
@@ -35,29 +36,40 @@ export default function Page() {
     queryFn: getCompaniesApi,
   });
 
-  // const { mutate } = useMutation({
-  //   mutationKey: ["login"],
-  //   mutationFn: (data: { email: string; password: string }) => {
-  //     return loginApi({
-  //       body: data,
-  //       companyID: "2",
-  //     });
-  //   },
-  // });
-
   useEffect(() => {
-    // console.log("current_INXDEX ", currentIndex);
-    // console.log("DID ", driverId);
+    // only run when 4 digits entered and data is ready
+    if (currentIndex >= 4 && !isPending && data?.data?.length) {
+      const company = data.data.find(
+        (x: idk) => x.company_id === selectedCompany
+      );
 
-    if (currentIndex >= 4) {
-      console.log(data);
-    }
-    if (!isPending) {
-      console.log(data);
+      if (!company) {
+        console.warn("Company not found");
+        return;
+      }
 
-      // console.log(data.data[0].company_id === selectedCompany);
+      try {
+        const loginInfo = {
+          company: {
+            id: company.company_id,
+            img: company.company_logo,
+          },
+          driverID: driverId.join(""), // join digits into string
+        };
+
+        console.log("Saving to localStorage:", loginInfo);
+
+        localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
+
+        // small delay to ensure localStorage write
+        setTimeout(() => {
+          navig.push("login/pin");
+        }, 50);
+      } catch (err) {
+        console.error("Failed to set localStorage:", err);
+      }
     }
-  }, [driverId, isPending]);
+  }, [currentIndex, data, selectedCompany, isPending, driverId, navig]);
 
   const handleInputClick = (index: number) => {
     setCurrentIndex(index);
@@ -75,39 +87,63 @@ export default function Page() {
       <Card className="w-full max-w-md mx-4">
         <CardContent className="p-8">
           <div className="w-full text-center space-y-6 flex flex-col item-center justify-center">
-            {/* Logo */}
             <div className="w-[200px] mx-auto">
-              {/* <DropdownMenu>
+              <DropdownMenu>
                 <DropdownMenuTrigger className="border rounded-lg shadow">
-                  {!isPending &&
-                    data.data.find((x: idk) => {
-                      if (x.company_id === selectedCompany) {
-                        return (
-                          <Image
-                            alt="logo"
-                            src={x.company_logo}
-                            height={300}
-                            width={900}
-                          />
+                  {!isPending && (
+                    <>
+                      {(() => {
+                        const company = data.data.find(
+                          (x: idk) => x.company_id === selectedCompany
                         );
-                      }
-                    })}
+                        if (company) {
+                          console.log(company);
+
+                          return (
+                            <Image
+                              alt="logo"
+                              src={company.company_logo}
+                              height={300}
+                              width={900}
+                              className="w-[200px]!"
+                            />
+                          );
+                        } else {
+                          console.log(data.data);
+                          return data.data[0] ? (
+                            <Image
+                              alt="logo"
+                              src={data.data[0].company_logo}
+                              height={300}
+                              width={900}
+                            />
+                          ) : null;
+                        }
+                      })()}
+                    </>
+                  )}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {!isPending &&
                     data.data.map((x: idk) => (
-                      <DropdownMenuItem key={x.company_id}>
+                      <DropdownMenuItem
+                        key={x.company_id}
+                        className="w-[200px]!"
+                        onClick={() => {
+                          setSelectedCompany(x.company_id);
+                        }}
+                      >
                         <Image
                           alt="logo"
                           src={x.company_logo ?? blankImg(200, 600)}
                           height={300}
                           width={900}
-                          className="w-[200px]"
+                          className="w-[200px]! aspect-video"
                         />
                       </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
-              </DropdownMenu> */}
+              </DropdownMenu>
             </div>
 
             {/* Title */}
