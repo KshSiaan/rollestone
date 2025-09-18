@@ -53,6 +53,7 @@ export default function Page() {
           company: {
             id: company.company_id,
             img: company.company_logo,
+            name: company.company_name,
           },
           driverID: driverId.join(""), // join digits into string
         };
@@ -89,7 +90,7 @@ export default function Page() {
           <div className="w-full text-center space-y-6 flex flex-col item-center justify-center">
             <div className="w-[200px] mx-auto">
               <DropdownMenu>
-                <DropdownMenuTrigger className="border rounded-lg shadow">
+                <DropdownMenuTrigger className="rounded-lg shadow border-2 p-2 border-foreground hover:shadow-md hover:shadow-black hover:scale-105 transition-all">
                   {!isPending && (
                     <>
                       {(() => {

@@ -8,7 +8,7 @@ export const driverLoginApi = async ({
   body,
   companyID,
 }: { body: { staff_number: string; pin_code: string,fcm_token?:string }; companyID: string }) => {
-  return howl("/v1/auth/login", {
+  return howl("/v1/auth/driver/login", {
     method: "POST",
     body,
     headers: { "X-Company-ID": String(companyID) },
@@ -100,10 +100,10 @@ export const resetPasswordWithTokenApi = async ({
 
 // >>>>>>>>>>>> PROFILE <<<<<<<<<<<<<<<<<
 
-export const getProfileApi = async ({ companyID }: { companyID: string }) => {
+export const getProfileApi = async ({token }: {token:string }) => {
   return howl("/v1/profile/me", {
     method: "GET",
-    headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 

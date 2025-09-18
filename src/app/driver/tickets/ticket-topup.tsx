@@ -43,9 +43,9 @@ export default function TicketTopup() {
                   <AvatarImage src={x.icon} />
                   <AvatarFallback>UI</AvatarFallback>
                 </Avatar>
-                <div className="text-2xl font-bold">
+                {/* <div className="text-2xl font-bold">
                   ${String(x.price).slice(0, 4)}
-                </div>
+                </div> */}
                 <p className="text-2xl">{x.title}</p>
               </Button>
             </DialogTrigger>
@@ -53,19 +53,7 @@ export default function TicketTopup() {
               <DialogHeader className="border-b pb-2">
                 <DialogTitle>Select Fare Quantity & Payment Method</DialogTitle>
               </DialogHeader>
-              <div className="">
-                <FarePopup />
-              </div>
-              <DialogFooter className="grid grid-cols-2 gap-6">
-                <DialogClose asChild>
-                  <Button variant={"outline"}>Cancel</Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button className="bg-blue-500 hover:bg-blue-600/90">
-                    Confirm & Proceed
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
+              <FarePopup selectedIte={x.title} />
             </DialogContent>
           </Dialog>
         ))}

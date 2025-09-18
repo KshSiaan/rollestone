@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { apiConfig } from "@/lib/config";
 import { howl } from "@/lib/utils";
 
 
@@ -9,10 +7,12 @@ import { howl } from "@/lib/utils";
 export const getAvailableTripsApi = async ({
   routeId,
   companyID,
-}: { routeId: number | string; companyID: string }) => {
+  token,
+}: { routeId: number | string; companyID: string; token?: string }) => {
   return howl(`/v1/driver/routes/${routeId}/available-trips`, {
     method: "GET",
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -20,10 +20,12 @@ export const getAvailableTripsApi = async ({
 export const findTripApi = async ({
   trip_number,
   companyID,
-}: { trip_number: string; companyID: string }) => {
+  token,
+}: { trip_number: string; companyID: string; token?: string }) => {
   return howl(`/v1/driver/trips/find?trip_number=${trip_number}`, {
     method: "GET",
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -31,17 +33,17 @@ export const findTripApi = async ({
 export const blockJourneyApi = async ({
   body,
   companyID,
+  token,
 }: {
-  body: {
-    trip_id: number | string;
-    fleet_number: number | string;
-  };
+  body: { trip_id: number | string; fleet_number: number | string };
   companyID: string;
+  token?: string;
 }) => {
-  return howl("/v1/driver/journeys/block", {
+  return howl("/v1/driver/trips/block", {
     method: "POST",
     body,
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -49,10 +51,14 @@ export const blockJourneyApi = async ({
 // ------------------ Driver Schedule / Journey APIs ------------------
 
 // 1. Get driver schedule
-export const getDriverScheduleApi = async ({ companyID }: { companyID: string }) => {
+export const getDriverScheduleApi = async ({
+  companyID,
+  token,
+}: { companyID: string; token?: string }) => {
   return howl("/v1/driver/journeys/driver-schedule", {
     method: "GET",
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -60,10 +66,12 @@ export const getDriverScheduleApi = async ({ companyID }: { companyID: string })
 export const startJourneyApi = async ({
   journeyID,
   companyID,
-}: { journeyID: number | string; companyID: string }) => {
+  token,
+}: { journeyID: number | string; companyID: string; token?: string }) => {
   return howl(`/v1/driver/journeys/${journeyID}/start`, {
     method: "POST",
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -71,10 +79,12 @@ export const startJourneyApi = async ({
 export const endJourneyApi = async ({
   journeyID,
   companyID,
-}: { journeyID: number | string; companyID: string }) => {
+  token,
+}: { journeyID: number | string; companyID: string; token?: string }) => {
   return howl(`/v1/driver/journeys/${journeyID}/end`, {
     method: "POST",
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
@@ -83,16 +93,31 @@ export const updateJourneyLocationApi = async ({
   journeyID,
   body,
   companyID,
+  token,
 }: {
   journeyID: number | string;
   body: { latitude: number; longitude: number };
   companyID: string;
+  token?: string;
 }) => {
   return howl(`/v1/driver/journeys/${journeyID}/update-location`, {
     method: "POST",
     body,
     headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
   });
 };
 
+//<<<<<<<<<<<<<<<<<<OTHERS<<<<<<<<<<<<<<<<<<<<
 
+
+export const getTransitionHistory = async ({
+  companyID,
+  token,
+}: { companyID: string; token?: string }) => {
+  return howl("/v1/transactions/history", {
+    method: "GET",
+    headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
+  });
+};

@@ -2,6 +2,9 @@ import { AppSidebar } from "@/components/app-sidebar";
 
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import SecurityProvider from "@/provider/security-provider";
+import { Loader2Icon } from "lucide-react";
+import { Suspense } from "react";
 
 export default function Layout({
   children,
@@ -20,7 +23,17 @@ export default function Layout({
       <AppSidebar variant="sidebar" rounded />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col bg-[#E8F1FB]">{children}</div>
+        <div className="flex flex-1 flex-col bg-[#E8F1FB]">
+          <Suspense
+            fallback={
+              <div className={`flex justify-center items-center h-24 mx-auto`}>
+                <Loader2Icon className={`animate-spin`} />
+              </div>
+            }
+          >
+            <SecurityProvider>{children}</SecurityProvider>
+          </Suspense>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

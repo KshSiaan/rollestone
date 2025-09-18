@@ -10,13 +10,16 @@ import { idk } from "@/lib/utils";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { driverLoginApi } from "@/api/auth";
+import { useCookies } from "react-cookie";
 
 export default function Page() {
   const navig = useRouter();
   const [driverId, setDriverId] = useState<string[]>(["", "", "", ""]);
+  const [, setCookie] = useCookies(["token"]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [localData, setLocalData] = useState<{
-    company: { img: string; id: string };
+    company: { img: string; id: string; name: string };
+    driverID: string;
   } | null>(null);
   const handleKeypadClick = (value: string) => {
     if (currentIndex < 4) {
@@ -39,6 +42,26 @@ export default function Page() {
         companyID: localData?.company.id ?? "1",
       });
     },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to Log in");
+      localStorage.removeItem("loginInfo");
+      navig.back();
+    },
+    onSuccess: (res: idk) => {
+      toast.success(
+        res.message ?? `Welcome to ${localData?.company.name} Driver Portal`
+      );
+
+      try {
+        setCookie("token", res.data.access_token);
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        return;
+      }
+
+      navig.push("/driver/driver");
+    },
   });
 
   useEffect(() => {
@@ -56,6 +79,10 @@ export default function Page() {
   }, []);
   useEffect(() => {
     if (currentIndex >= 4) {
+      mutate({
+        staff_number: localData?.driverID ?? "",
+        pin_code: driverId.join(""),
+      });
     }
   }, [currentIndex]);
 
@@ -75,13 +102,21 @@ export default function Page() {
         <CardContent className="p-8">
           <div className="w-full text-center space-y-6 flex flex-col item-center justify-center">
             <div className="w-[200px] mx-auto">
-              {/* <Image alt="logo" src={} height={300} width={900} /> */}
+              {localData && (
+                <Image
+                  alt="logo"
+                  src={localData.company.img}
+                  height={300}
+                  width={900}
+                  className="w-[200px] mx-auto"
+                />
+              )}
             </div>
 
             {/* Title */}
             <div className="space-y-2">
               <h1 className="text-xl font-bold text-gray-900">
-                Bentley Coachlines Ticketing
+                {localData?.company.name}
               </h1>
               <h2 className="text-lg text-gray-700">Driver Portal</h2>
             </div>
