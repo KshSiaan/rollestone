@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ConfirmTopup from "./confirm-topup";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
-export default function ManualTopup() {
+export default function ManualTopup({ passenger }: { passenger?: string }) {
   const [amount, setAmount] = useState("0");
 
   const handleNumberClick = (num: string) => {
@@ -36,7 +37,13 @@ export default function ManualTopup() {
     ["7", "8", "9"],
     [".", "0", "*"],
   ];
-
+  if (!passenger) {
+    return (
+      <Alert>
+        <AlertTitle>Select a passenger First</AlertTitle>
+      </Alert>
+    );
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -91,7 +98,8 @@ export default function ManualTopup() {
             >
               CLEAR
             </Button>
-            <ConfirmTopup />
+
+            <ConfirmTopup passenger={passenger} amount={parseInt(amount)} />
           </div>
         </div>
       </DialogContent>

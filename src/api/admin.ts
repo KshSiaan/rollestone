@@ -468,11 +468,13 @@ export const updateTripApi = async ({
 export const getPassengersApi = async ({
   companyID,
   token,
+  search
 }: {
   companyID: string;
   token?: string;
+  search?:string
 }) => {
-  return howl("/v1/admin/passengers", {
+  return howl(`/v1/admin/passengers?search=${search??""}`, {
     method: "GET",
     headers: { "X-Company-ID": String(companyID) },
     ...(token && { token }),

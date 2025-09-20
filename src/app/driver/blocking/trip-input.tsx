@@ -6,19 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { DialogClose } from "@radix-ui/react-dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useMutation } from "@tanstack/react-query";
+import { findTripApi } from "@/api/driver";
+import { useUser } from "@/context/user-context";
+import { toast } from "sonner";
+import { idk } from "@/lib/utils";
+import { useCookies } from "react-cookie";
+import TripBlocker from "./trip-blocker";
 
 export function TripBlockingCard() {
   const [tripNumber, setTripNumber] = useState("");
-
+  const { user } = useUser();
+  const [{ token }] = useCookies(["token"]);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [data, setData] = useState<idk | undefined>();
+  const { mutate } = useMutation({
+    mutationKey: ["find_trip"],
+    mutationFn: () => {
+      return findTripApi({
+        trip_number: tripNumber,
+        companyID: String(user?.company_id),
+        token,
+      });
+    },
+  });
   const keypadButtons = [
     ["1", "2", "3"],
     ["4", "5", "6"],
@@ -36,8 +48,18 @@ export function TripBlockingCard() {
   };
 
   const handleFindTrip = () => {
-    console.log("Finding trip:", tripNumber);
-    // Handle trip search logic here
+    mutate(undefined, {
+      onError: (err) => {
+        toast.error(err.message ?? "Failed to find trip");
+        setDialogOpen(false);
+        setTripNumber("");
+      },
+      onSuccess: (data: idk) => {
+        console.log(data);
+        setDialogOpen(true);
+        setData(data.data);
+      },
+    });
   };
 
   return (
@@ -85,7 +107,7 @@ export function TripBlockingCard() {
           </div>
         </div>
 
-        <Dialog>
+        <Dialog open={dialogOpen}>
           <DialogTrigger asChild>
             {/* Find Trip Button */}
             <Button
@@ -97,59 +119,10 @@ export function TripBlockingCard() {
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold">
-                Please Confirm Trip Details Below
-              </DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 items-center gap-4">
-                <span className="text-gray-700 font-medium">Route:</span>
-                <span className="text-right text-gray-900">
-                  {tripDetails.route}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 items-center gap-4">
-                <span className="text-gray-700 font-medium">Time:</span>
-                <span className="text-right text-gray-900">
-                  {tripDetails.time}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 items-center gap-4">
-                <span className="text-gray-700 font-medium">Start Point:</span>
-                <span className="text-right text-gray-900">
-                  {tripDetails.startPoint}
-                </span>
-              </div>
-            </div>
-            <DialogFooter className="flex flex-col-reverse sm:flex-col sm:justify-center gap-3 mt-4">
-              <Button
-                type="button"
-                variant="default"
-                // onClick={onStartTrip}
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-6 px-4 rounded-md text-lg"
-              >
-                START TRIP
-              </Button>
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  // onClick={onClose}
-                  className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-100 py- px-4 rounded-md text-lg"
-                >
-                  CANCEL
-                </Button>
-              </DialogClose>
-            </DialogFooter>
+            <TripBlocker setDialogOpen={setDialogOpen} data={data} />
           </DialogContent>
         </Dialog>
       </CardContent>
     </Card>
   );
 }
-const tripDetails = {
-  route: "RX1 Rolleston",
-  time: "06:35 AM",
-  startPoint: "Oak Tree Lane",
-};

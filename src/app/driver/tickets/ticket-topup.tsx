@@ -5,35 +5,35 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { IconCreditCardRefund, IconWheelchair } from "@tabler/icons-react";
-import { BabyIcon, BikeIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { BabyIcon, BikeIcon } from "lucide-react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import ManualTopup from "./manual-topup";
-import ConfirmTopup from "./confirm-topup";
+
 import FarePopup from "./fare-popup";
+import ManualTopupSec from "./manual-topop-sec";
 
 export default function TicketTopup() {
-  const [topupAmm, setTopupAmm] = useState<number | null>(null);
-  const handleTopupSelect = (amount: number) => {
-    setTopupAmm((prev) => (prev === amount ? null : amount));
-  };
+  const [selectedItem, setSelectedItem] = useState<string | undefined>();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   return (
     <Card className="w-full h-auto flex flex-col justify-between">
       <CardContent className="h-auto w-full grid grid-cols-3 gap-6 p-6">
         {ticketTypes.map((x, i) => (
-          <Dialog key={i}>
+          <Dialog key={i} open={dialogOpen}>
             <DialogTrigger asChild>
               <Button
                 variant={"outline"}
+                onClick={() => {
+                  setSelectedItem(x.title);
+                  setDialogOpen(true);
+                }}
                 className={cn(
                   "h-auto! flex flex-col justify-center gap-4 border",
                   "border-blue-300"
@@ -43,9 +43,6 @@ export default function TicketTopup() {
                   <AvatarImage src={x.icon} />
                   <AvatarFallback>UI</AvatarFallback>
                 </Avatar>
-                {/* <div className="text-2xl font-bold">
-                  ${String(x.price).slice(0, 4)}
-                </div> */}
                 <p className="text-2xl">{x.title}</p>
               </Button>
             </DialogTrigger>
@@ -53,7 +50,10 @@ export default function TicketTopup() {
               <DialogHeader className="border-b pb-2">
                 <DialogTitle>Select Fare Quantity & Payment Method</DialogTitle>
               </DialogHeader>
-              <FarePopup selectedIte={x.title} />
+              <FarePopup
+                setDialogOpen={setDialogOpen}
+                selectedItem={selectedItem}
+              />
             </DialogContent>
           </Dialog>
         ))}
@@ -81,66 +81,25 @@ export default function TicketTopup() {
         ))}
       </CardContent>
       <CardFooter className="flex flex-col gap-2">
+        <ManualTopupSec />
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="flex gap-2 items-center text-lg h-14 w-full bg-green-300 hover:bg-green-400/90 text-green-700 font-bold">
-              <PlusIcon className="size-6" />
-              Top Up
+            <Button className="flex gap-2 items-center text-lg h-14 w-full bg-rose-300 text-rose-700 font-bold">
+              <IconCreditCardRefund className="size-6" />
+              Refund
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>RX Card Top Up</DialogTitle>
+              <DialogTitle>Select Transaction to Refund</DialogTitle>
+              <DialogDescription>
+                Refunds are only available for transactions made within the last
+                10 minutes.
+              </DialogDescription>
             </DialogHeader>
-            <div className="w-full">
-              <div className="rounded-sm flex justify-start items-center gap-2 px-2 bg-blue-50">
-                <SearchIcon className="size-4 text-blue-500" />
-                <Input
-                  className="border-none! shadow-none! ring-0! outline-0! bg-transparent!"
-                  placeholder="Search by serial"
-                />
-              </div>
-            </div>
-            <h4 className="text-center font-semibold text-sm">
-              Select Top Up Amount
-            </h4>
-            <div className="grid grid-cols-3 gap-6">
-              {[10, 50, 100].map((amount) => (
-                <Button
-                  key={amount}
-                  variant={topupAmm === amount ? "default" : "success"}
-                  className={cn(
-                    "h-16 text-lg",
-                    topupAmm === amount
-                      ? "border-blue-600 bg-green-950 hover:bg-green-950/90"
-                      : ""
-                  )}
-                  onClick={() => handleTopupSelect(amount)}
-                >
-                  ${amount}
-                </Button>
-              ))}
-            </div>
-            <DialogFooter className="flex flex-col! justify-center items-center gap-4">
-              {!topupAmm ? (
-                <ManualTopup />
-              ) : (
-                <>
-                  <ConfirmTopup />
-                </>
-              )}
-              <DialogClose asChild>
-                <Button variant="outline" className="w-full">
-                  Back To Scan
-                </Button>
-              </DialogClose>
-            </DialogFooter>
+            <div className=""></div>
           </DialogContent>
         </Dialog>
-        <Button className="flex gap-2 items-center text-lg h-14 w-full bg-rose-300 text-rose-700 font-bold">
-          <IconCreditCardRefund className="size-6" />
-          Refund
-        </Button>
       </CardFooter>
     </Card>
   );
