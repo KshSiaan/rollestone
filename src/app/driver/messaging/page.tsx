@@ -1,56 +1,67 @@
 "use client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageCard } from "./message-card";
+import { getNotifications, readAllNotif } from "@/api/driver";
+import { useCookies } from "react-cookie";
+import { useUser } from "@/context/user-context";
+import { Loader2Icon } from "lucide-react";
+import { idk } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Page() {
-  const messages = [
-    {
-      title: "Route Update - RX1",
-      sender: "Dispatch Office",
-      message:
-        "Please note that there will be a temporary stop change on RX1 route starting tomorrow at 3:00 PM...",
-      timestamp: "10:30 PM",
-      priority: "medium" as const,
-      type: "update" as const,
+  const [{ token }] = useCookies(["token"]);
+  const ql = useQueryClient();
+  const { user } = useUser();
+  const { data, isPending } = useQuery({
+    queryKey: ["messages"],
+    queryFn: (): idk => {
+      return getNotifications({
+        companyID: String(user?.company_id),
+        token,
+      });
     },
-    {
-      title: "Shift Schedule Change",
-      sender: "Operations Manager",
-      message:
-        "Your shift for tomorrow has been extended by 1 hour. Please check in with dispatch for details.",
-      timestamp: "10:30 PM",
-      priority: "low" as const,
-      type: "schedule" as const,
+  });
+
+  const { mutate } = useMutation({
+    mutationKey: ["read_notif"],
+    mutationFn: () => {
+      return readAllNotif({
+        companyID: String(user?.company_id),
+        token,
+      });
     },
-    {
-      title: "Weather Alert",
-      sender: "Safety Department",
-      message:
-        "Heavy rain expected this afternoon. Please drive carefully and allow extra time between stops. Visibility may be reduced.",
-      timestamp: "10:30 PM",
-      priority: "high" as const,
-      type: "alert" as const,
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
     },
-  ];
+    onSuccess: (res: idk) => {
+      ql.invalidateQueries({ queryKey: ["messages"] });
+      toast.success(res.message ?? `Marked all messages as read`);
+    },
+  });
 
   return (
     <div className="w-full p-4 space-y-4">
-      {/* <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Messages</h1>
-        <p className="text-slate-600">Recent notifications and updates</p>
-      </div> */}
-
+      <div className="flex justify-end items-center">
+        <Button
+          className="cursor-pointer"
+          onClick={() => {
+            mutate();
+          }}
+        >
+          Mark all as read
+        </Button>
+      </div>
       <div className="space-y-3">
-        {messages.map((message, index) => (
-          <MessageCard
-            key={index}
-            title={message.title}
-            sender={message.sender}
-            message={message.message}
-            timestamp={message.timestamp}
-            priority={message.priority}
-            type={message.type}
-          />
-        ))}
+        {isPending ? (
+          <div className={`flex justify-center items-center h-24 mx-auto`}>
+            <Loader2Icon className={`animate-spin`} />
+          </div>
+        ) : (
+          data.data.map((message: idk) => (
+            <MessageCard key={message.id} message={message} />
+          ))
+        )}
       </div>
     </div>
   );

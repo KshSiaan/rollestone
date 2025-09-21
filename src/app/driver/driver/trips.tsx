@@ -16,10 +16,21 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/context/user-context";
-import { blockJourneyApi, getDriverScheduleApi } from "@/api/driver";
+import {
+  blockJourneyApi,
+  endJourneyApi,
+  getDriverScheduleApi,
+  startJourneyApi,
+} from "@/api/driver";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 import { toast } from "sonner";
@@ -54,6 +65,47 @@ export default function Trips() {
     onSuccess: (res: idk) => {
       qcl.invalidateQueries({ queryKey: ["trips"] });
       toast.success(res.message ?? "Successfully blocked this trip");
+    },
+  });
+  const { mutate: startJourney } = useMutation({
+    mutationKey: ["start_trip"],
+    mutationFn: ({
+      dataset,
+      jId,
+    }: {
+      dataset: { latitude: number; longitude: number };
+      jId: number | string;
+    }) => {
+      return startJourneyApi({
+        data: dataset,
+        journeyID: jId,
+        companyID: String(user?.company_id),
+        token,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (res: idk) => {
+      qcl.invalidateQueries({ queryKey: ["trips"] });
+      toast.success(res.message ?? "Successfully Started this trip");
+    },
+  });
+  const { mutate: endJourney } = useMutation({
+    mutationKey: ["end_trip"],
+    mutationFn: ({ jId }: { jId: number | string }) => {
+      return endJourneyApi({
+        journeyID: jId,
+        companyID: String(user?.company_id),
+        token,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message ?? "Failed to complete this request");
+    },
+    onSuccess: (res: idk) => {
+      qcl.invalidateQueries({ queryKey: ["trips"] });
+      toast.success(res.message ?? "Successfully Started this trip");
     },
   });
 
@@ -135,6 +187,9 @@ export default function Trips() {
                       </h3>
                     </div>
                     <div className="flex justify-center items-center gap-2 ">
+                      <span>
+                        <Badge>{x.status}</Badge>
+                      </span>
                       <Badge className="bg-transparent! border-blue-600 text-foreground rounded-sm! ">
                         Trip: #{x.trip.id}
                       </Badge>
@@ -223,15 +278,52 @@ export default function Trips() {
                             ),
                         },
                       ].map(({ title, content }, i) => (
-                        <p className="flex flex-col" key={i}>
+                        <div className="flex flex-col" key={i}>
                           <span className="text-base font-bold">{title}</span>
                           <span className="font-semibold text-sm">
                             {content}
                           </span>
-                        </p>
+                        </div>
                       ))}
-                      <p></p>
                     </CardContent>
+                    <CardFooter className="flex justify-end items-center gap-6">
+                      <Button
+                        className="cursor-pointer"
+                        onClick={() => {
+                          if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                              (pos) => {
+                                startJourney({
+                                  jId: x.id,
+                                  dataset: {
+                                    latitude: pos.coords.latitude,
+                                    longitude: pos.coords.longitude,
+                                  },
+                                });
+                              },
+                              (err) => {
+                                console.error("Error getting location:", err);
+                              }
+                            );
+                          } else {
+                            console.error("Geolocation not supported");
+                          }
+                        }}
+                      >
+                        Start Journey
+                      </Button>
+
+                      <Button
+                        className="cursor-pointer"
+                        onClick={() => {
+                          endJourney({
+                            jId: x.id,
+                          });
+                        }}
+                      >
+                        End Journey
+                      </Button>
+                    </CardFooter>
                   </Card>
                 </AccordionContent>
               </AccordionItem>

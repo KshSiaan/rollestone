@@ -31,6 +31,7 @@ import { MicOff, Volume2Icon, WifiIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import AnimToggle from "./sub-ui/animated-toggle";
+import ZelloTalkie from "./core/zello-talkie";
 const prefix = "/driver";
 
 const navMainItems = [
@@ -96,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
         {/* <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
-        <Card className="mt-auto py-4 mx-2">
+        {/* <Card className="mt-auto py-4 mx-2">
           <CardHeader className="flex items-center justify-between px-4">
             <CardTitle>Zello</CardTitle>
             <div className="gap-2 flex items-center">
@@ -118,7 +119,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <MicOff /> PTT
             </Button>
           </CardFooter>
-        </Card>
+        </Card> */}
+        <ZelloTalkie />
       </SidebarContent>
       <SidebarFooter className="mt-4">
         <AnimToggle />

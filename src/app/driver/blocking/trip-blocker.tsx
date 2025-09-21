@@ -6,6 +6,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { idk } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { blockJourneyApi } from "@/api/driver";
+import { useUser } from "@/context/user-context";
+import { useCookies } from "react-cookie";
 export default function TripBlocker({
   setDialogOpen,
   data,
@@ -13,6 +17,22 @@ export default function TripBlocker({
   setDialogOpen: idk;
   data: idk;
 }) {
+  const [{ token }] = useCookies(["token"]);
+  const { user } = useUser();
+  const { mutate } = useMutation({
+    mutationKey: ["block_trip"],
+    mutationFn: (dataset: {
+      trip_id: string | number;
+      fleet_number: string | number;
+    }) => {
+      return blockJourneyApi({
+        companyID: String(user?.company_id),
+        token,
+        body: dataset,
+      });
+    },
+  });
+
   return (
     <>
       <DialogHeader>
@@ -20,38 +40,25 @@ export default function TripBlocker({
           Please Confirm Trip Details Below
         </DialogTitle>
       </DialogHeader>
-      {data && (
-        <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
-          <code className="whitespace-pre-wrap">
-            {JSON.stringify(data, null, 2)}
-          </code>
-        </pre>
-      )}
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-2 items-center gap-4">
           <span className="text-gray-700 font-medium">Route:</span>
-          <span className="text-right text-gray-900">{tripDetails.route}</span>
+          <span className="text-right text-gray-900">{data[0].route.name}</span>
         </div>
         <div className="grid grid-cols-2 items-center gap-4">
           <span className="text-gray-700 font-medium">Time:</span>
-          <span className="text-right text-gray-900">{tripDetails.time}</span>
+          <span className="text-right text-gray-900">
+            {data[0].departure_time}
+          </span>
         </div>
         <div className="grid grid-cols-2 items-center gap-4">
           <span className="text-gray-700 font-medium">Start Point:</span>
           <span className="text-right text-gray-900">
-            {tripDetails.startPoint}
+            {data[0].starting_point}
           </span>
         </div>
       </div>
       <DialogFooter className="flex flex-col-reverse sm:flex-col sm:justify-center gap-3 mt-4">
-        <Button
-          type="button"
-          variant="default"
-          // onClick={onStartTrip}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-6 px-4 rounded-md text-lg"
-        >
-          START TRIP
-        </Button>
         <Button
           type="button"
           variant="outline"
@@ -66,8 +73,3 @@ export default function TripBlocker({
     </>
   );
 }
-const tripDetails = {
-  route: "RX1 Rolleston",
-  time: "06:35 AM",
-  startPoint: "Oak Tree Lane",
-};

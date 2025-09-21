@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SecurityProvider from "@/provider/security-provider";
 import { Loader2Icon } from "lucide-react";
 import { Suspense } from "react";
+import GlobalJourneyUpdater from "./global-journey-updater";
 
 export default function Layout({
   children,
@@ -31,7 +32,10 @@ export default function Layout({
               </div>
             }
           >
-            <SecurityProvider>{children}</SecurityProvider>
+            <SecurityProvider>
+              {children}
+              <GlobalJourneyUpdater />
+            </SecurityProvider>
           </Suspense>
         </div>
       </SidebarInset>

@@ -1,26 +1,54 @@
+"use client";
+import MapBase from "@/components/core/map";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ClockIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { ClockIcon, Loader2Icon } from "lucide-react";
 import React from "react";
+import Timeline from "./timeline";
+import { useQuery } from "@tanstack/react-query";
+import { getDriverScheduleApi } from "@/api/driver";
+import { useCookies } from "react-cookie";
+import { useUser } from "@/context/user-context";
+import { Marker } from "@vis.gl/react-google-maps";
+import { idk } from "@/lib/utils";
 
 export default function Page() {
+  const [{ token }] = useCookies(["token"]);
+  const { user } = useUser();
+  const { data, isPending } = useQuery({
+    queryKey: ["schedule"],
+    queryFn: (): idk => {
+      return getDriverScheduleApi({
+        companyID: String(user?.company_id),
+        token,
+      });
+    },
+  });
+  if (isPending) {
+    return (
+      <main className="h-full w-full flex justify-center items-center">
+        <Loader2Icon className={`animate-spin`} />
+      </main>
+    );
+  }
+
   return (
     <main className="p-16 h-full w-full grid grid-cols-10 gap-6">
-      <section className="col-span-7 w-full h-full rounded-lg bg-background shadow flex flex-col">
-        <div style={{ width: "100%" }}>
-          <iframe
-            width="100%"
-            height="600"
-            className="!min-h-[90%]"
-            src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=1%20Grafton%20Street,%20Dublin,%20Ireland+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-          >
-            <Link href="https://www.mapsdirections.info/fr/calculer-la-population-sur-une-carte">
-              mesurer la population sur une carte
-            </Link>
-          </iframe>
-        </div>
+      <section className="col-span-7 w-full h-full rounded-lg bg-background shadow flex flex-col overflow-hidden">
+        <MapBase
+          defaultCenter={{
+            lat: parseFloat(data.data[0].location.latitude),
+            lng: parseFloat(data.data[0].location.longitude),
+          }}
+          className="h-[90%] w-full"
+        >
+          <Marker
+            position={{
+              lat: parseFloat(data.data[0].location.latitude),
+              lng: parseFloat(data.data[0].location.longitude),
+            }}
+          />
+        </MapBase>
         <div className="flex-1 w-full flex items-center justify-between px-6">
           <h3>
             <span className="font-bold">Direction:</span> Outbound
@@ -42,63 +70,7 @@ export default function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-2 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-            {/* Timeline items */}
-            <div className="space-y-8">
-              <div className="relative flex items-start gap-4">
-                <div className="w-4 h-4 bg-green-500 rounded-full relative z-10"></div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm">Terminal Station</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Scheduled: 10:00 AM
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative flex items-center gap-4">
-                <div className="w-4 h-4 bg-green-500 rounded-full relative z-10"></div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm">Terminal Station</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Scheduled: 10:00 AM
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative flex items-center gap-4">
-                <div className="w-4 h-4 bg-green-500 rounded-full relative z-10"></div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm">Main Street Station</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Scheduled: 10:00 AM
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative flex items-center gap-4">
-                <div className="w-4 h-4 bg-green-500 rounded-full relative z-10"></div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm">Terminal Station</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Scheduled: 10:00 AM
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative flex items-end gap-4">
-                <div className="w-4 h-4 bg-green-500 rounded-full relative z-10"></div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm">Terminal Station</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Scheduled: 10:00 AM
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Timeline stops={data.data[0].trip.route.stops} />
         </CardContent>
       </Card>
     </main>
