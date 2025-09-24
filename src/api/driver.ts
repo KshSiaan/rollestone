@@ -68,12 +68,15 @@ export const startJourneyApi = async ({
   companyID,
   data,
   token,
-}: { journeyID: number | string; companyID: string; token?: string,data:{latitude:number
-longitude:number
-} }) => {
+}: {
+  journeyID: number | string; companyID: string; token?: string, data: {
+    latitude: number
+    longitude: number
+  }
+}) => {
   return howl(`/v1/driver/journeys/${journeyID}/start`, {
     method: "POST",
-    body:data,
+    body: data,
     headers: { "X-Company-ID": String(companyID) },
     ...(token && { token }),
   });
@@ -141,7 +144,7 @@ export const readNotifById = async ({
   id,
   companyID,
   token,
-}: { companyID: string; token?: string,id:string }) => {
+}: { companyID: string; token?: string, id: string }) => {
   return howl(`/v1/notifications/${id}/read`, {
     method: "PATCH",
     headers: { "X-Company-ID": String(companyID) },
@@ -152,7 +155,7 @@ export const readNotifById = async ({
 export const readAllNotif = async ({
   companyID,
   token,
-}: { companyID: string; token?: string}) => {
+}: { companyID: string; token?: string }) => {
   return howl(`/v1/notifications/mark-all-as-read`, {
     method: "POST",
     headers: { "X-Company-ID": String(companyID) },
