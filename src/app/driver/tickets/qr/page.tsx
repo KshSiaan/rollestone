@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <Scanner
       onScan={(result) => console.log(result)}
-      onError={(error) => console.log(error?.message)}
+      onError={(error: any) => console.log(error?.message)}
     />
   );
 }
