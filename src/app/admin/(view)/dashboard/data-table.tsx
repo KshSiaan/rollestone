@@ -34,7 +34,7 @@ import { getLiveDashboardDataApi } from "@/api/admin";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 export default function DataTable() {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["AdminToken"]);
   const [filter, setFilter] = useState<
     "all" | "ongoing" | "completed" | "blocked" | "cancelled"
   >("all");
@@ -44,7 +44,7 @@ export default function DataTable() {
       return getLiveDashboardDataApi({
         filter: "all",
         companyID: "1",
-        token: cookies.token,
+        token: cookies.AdminToken,
       });
     },
   });

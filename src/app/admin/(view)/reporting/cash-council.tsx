@@ -19,7 +19,7 @@ import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 
 export default function CashCouncil() {
-  const [{ token }] = useCookies(["token"]);
+  const [{ AdminToken }] = useCookies(["AdminToken"]);
   const [selectedDate, setSelectedDate] = useState("2025-08-20"); // default
 
   const { data, isPending } = useQuery({
@@ -28,7 +28,7 @@ export default function CashCouncil() {
       return getCashReconciliationApi({
         date: selectedDate,
         companyID: "1",
-        token,
+        token: AdminToken,
       });
     },
   });

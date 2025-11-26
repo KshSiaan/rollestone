@@ -32,12 +32,12 @@ import { getCompaniesApi } from "@/api/admin";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 export default function CompanyTable() {
-  const [{ token }] = useCookies(["token"]);
+  const [{ AdminToken }] = useCookies(["AdminToken"]);
 
   const { data, isPending } = useQuery({
     queryKey: ["companies"],
     queryFn: (): idk => {
-      return getCompaniesApi({ companyID: "1", token });
+      return getCompaniesApi({ companyID: "1", token: AdminToken });
     },
   });
 

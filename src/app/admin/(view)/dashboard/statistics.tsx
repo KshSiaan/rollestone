@@ -10,7 +10,7 @@ import { cookies } from "next/headers";
 import { getDashboardStatsApi } from "@/api/admin";
 import { idk } from "@/lib/utils";
 export default async function Statistics() {
-  const token = (await cookies()).get("token")?.value;
+  const token = (await cookies()).get("AdminToken")?.value;
 
   const call: idk = await getDashboardStatsApi({
     companyID: "1",

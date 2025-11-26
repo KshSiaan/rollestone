@@ -14,7 +14,7 @@ export default function TopUp({ id }: { id: string }) {
   console.log(id);
 
   const [amm, setAmm] = useState<string>("0");
-  const [{ token }] = useCookies(["token"]);
+  const [{ AdminToken }] = useCookies(["AdminToken"]);
   const { mutate } = useMutation({
     mutationKey: ["top_up"],
     mutationFn: () => {
@@ -22,7 +22,7 @@ export default function TopUp({ id }: { id: string }) {
         passengerId: id,
         companyID: "1",
         body: { amount: parseFloat(amm) },
-        token,
+        token: AdminToken,
       });
     },
     onError: (err) => {

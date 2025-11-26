@@ -41,11 +41,11 @@ import TopUp from "./top-up";
 import PassengerState from "./passenger-state";
 export default function PassengerTable() {
   const [search, setSearch] = useState<string>("");
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["AdminToken"]);
   const { data, isPending } = useQuery({
     queryKey: ["passengers"],
     queryFn: (): idk => {
-      return getPassengersApi({ companyID: "1", token: cookies.token });
+      return getPassengersApi({ companyID: "1", token: cookies.AdminToken });
     },
   });
   return (

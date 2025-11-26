@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useRouter } from "next/navigation";
 
 export default function FarePopup({
   selectedItem,
@@ -41,6 +41,7 @@ export default function FarePopup({
   const [passeng, setPasseng] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { user } = useUser();
+  const navig = useRouter();
   const [{ token }] = useCookies(["token"]);
   const ticketTypes = [
     { title: "Adult", price: 4.0, icon: "/avatar/adult.png" },
@@ -271,7 +272,13 @@ export default function FarePopup({
               key={i}
               variant={paymentMethod === method ? "success" : "outline"}
               className="flex flex-col items-center h-auto py-6"
-              onClick={() => handlePaymentSelect(method)}
+              onClick={() => {
+                if (method === "RX Card") {
+                  navig.push(`/driver/tickets/qr`);
+                } else {
+                  handlePaymentSelect(method);
+                }
+              }}
             >
               <span className="text-2xl">
                 {method === "Cash" ? "$" : method === "RX Card" ? "📇" : "🎁"}
@@ -281,6 +288,7 @@ export default function FarePopup({
           ))}
         </div>
       </div>
+
       <DialogFooter className="grid grid-cols-2 gap-6">
         <DialogClose
           asChild

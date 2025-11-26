@@ -24,40 +24,45 @@ export default function TicketTopup() {
 
   return (
     <Card className="w-full h-auto flex flex-col justify-between">
+      {/* Shared Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader className="border-b pb-2">
+            <DialogTitle>Select Fare Quantity & Payment Method</DialogTitle>
+          </DialogHeader>
+
+          <FarePopup
+            setDialogOpen={setDialogOpen}
+            selectedItem={selectedItem}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Ticket Types */}
       <CardContent className="h-auto w-full grid grid-cols-3 gap-6 p-6">
         {ticketTypes.map((x, i) => (
-          <Dialog key={i} open={dialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant={"outline"}
-                onClick={() => {
-                  setSelectedItem(x.title);
-                  setDialogOpen(true);
-                }}
-                className={cn(
-                  "h-auto! flex flex-col justify-center gap-4 border",
-                  "border-blue-300"
-                )}
-              >
-                <Avatar className="size-16">
-                  <AvatarImage src={x.icon} />
-                  <AvatarFallback>UI</AvatarFallback>
-                </Avatar>
-                <p className="text-2xl">{x.title}</p>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader className="border-b pb-2">
-                <DialogTitle>Select Fare Quantity & Payment Method</DialogTitle>
-              </DialogHeader>
-              <FarePopup
-                setDialogOpen={setDialogOpen}
-                selectedItem={selectedItem}
-              />
-            </DialogContent>
-          </Dialog>
+          <Button
+            key={x.title}
+            variant={"outline"}
+            onClick={() => {
+              setSelectedItem(x.title);
+              setDialogOpen(true);
+            }}
+            className={cn(
+              "h-auto! flex font-semibold flex-col aspect-video justify-center gap-4 border",
+              "border-blue-300"
+            )}
+          >
+            {/* <Avatar className="size-16">
+              <AvatarImage src={x.icon} />
+              <AvatarFallback>UI</AvatarFallback>
+            </Avatar> */}
+            <p className="text-2xl">{x.title}</p>
+          </Button>
         ))}
       </CardContent>
+
+      {/* Ticket Variants */}
       <CardContent className="w-full grid grid-cols-3 gap-6">
         {ticketVariants.map((x, i) => (
           <Button
@@ -80,6 +85,8 @@ export default function TicketTopup() {
           </Button>
         ))}
       </CardContent>
+
+      {/* Footer */}
       <CardFooter className="flex flex-col gap-2">
         <ManualTopupSec />
         <Dialog>
@@ -106,6 +113,7 @@ export default function TicketTopup() {
 }
 
 const bgColors = ["bg-fuchsia-200", "bg-sky-200", "bg-amber-200"];
+
 export const ticketTypes = [
   {
     title: "Adult",
@@ -128,6 +136,7 @@ export const ticketTypes = [
     icon: "/avatar/senior.png",
   },
 ];
+
 const ticketVariants = [
   {
     title: "Bike",

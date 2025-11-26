@@ -20,11 +20,11 @@ import { getRoutesApi } from "@/api/admin";
 import { cn, idk } from "@/lib/utils";
 
 export default function Routes() {
-  const [cookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["AdminToken"]);
   const { data, isPending } = useQuery({
     queryKey: ["routes"],
     queryFn: (): idk => {
-      return getRoutesApi({ companyID: "1", token: cookies.token });
+      return getRoutesApi({ companyID: "1", token: cookies.AdminToken });
     },
   });
   if (isPending) {

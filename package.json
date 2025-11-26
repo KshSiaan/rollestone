@@ -39,6 +39,7 @@
     "@tanstack/react-query-devtools": "^5.86.0",
     "@tanstack/react-table": "^8.21.3",
     "@vis.gl/react-google-maps": "^1.5.5",
+    "@yudiel/react-qr-scanner": "^2.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "input-otp": "^1.4.2",
