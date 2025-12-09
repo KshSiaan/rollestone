@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, idk } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { IconCreditCardRefund, IconWheelchair } from "@tabler/icons-react";
-import { BabyIcon, BikeIcon } from "lucide-react";
+import { BabyIcon, BikeIcon, Loader2Icon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,10 +17,27 @@ import {
 
 import FarePopup from "./fare-popup";
 import ManualTopupSec from "./manual-topop-sec";
+import { useQuery } from "@tanstack/react-query";
+import { getFareDataApi } from "@/api/admin";
+import { useUser } from "@/context/user-context";
+import { useCookies } from "react-cookie";
 
 export default function TicketTopup() {
   const [selectedItem, setSelectedItem] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [fareState, setFareState] = useState<any>();
+  const { user } = useUser();
+  const [{ token }] = useCookies(["token"]);
+
+  const { data: fareset, isPending: fareLoading } = useQuery({
+    queryKey: ["fare_pricing"],
+    queryFn: (): idk => {
+      return getFareDataApi({
+        companyID: String(user?.company_id),
+        token,
+      });
+    },
+  });
 
   return (
     <Card className="w-full h-auto flex flex-col justify-between">
@@ -34,6 +51,7 @@ export default function TicketTopup() {
           <FarePopup
             setDialogOpen={setDialogOpen}
             selectedItem={selectedItem}
+            fares={fareset?.data?.trip?.route?.fares}
           />
         </DialogContent>
       </Dialog>
@@ -58,6 +76,25 @@ export default function TicketTopup() {
               <AvatarFallback>UI</AvatarFallback>
             </Avatar> */}
             <p className="text-2xl">{x.title}</p>
+            <div>
+              {fareLoading ? (
+                <div
+                  className={`flex justify-center items-center h-24 mx-auto`}
+                >
+                  <Loader2Icon className={`animate-spin`} />
+                </div>
+              ) : (
+                fareset?.data?.trip?.route?.fares
+                  ?.filter(
+                    (z: idk) => z.passenger_type === x.title.toLowerCase()
+                  )
+                  .map((item: any, index: number) => (
+                    <p key={index}>
+                      {item.payment_method}:${item.amount}
+                    </p>
+                  ))
+              )}
+            </div>
           </Button>
         ))}
       </CardContent>
@@ -81,7 +118,7 @@ export default function TicketTopup() {
             >
               <x.icon className="size-8" />
             </div>
-            <p className="text-2xl">{x.title}</p>
+            <p className="xl:text-2xl">{x.title}</p>
           </Button>
         ))}
       </CardContent>

@@ -34,6 +34,7 @@ import {
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 export default function Trips() {
   const { user } = useUser();
   const qcl = useQueryClient();
@@ -169,6 +170,15 @@ export default function Trips() {
                   status: number;
                   created_at: string;
                   updated_at: string;
+                  fares: {
+                    id: number;
+                    route_id: number;
+                    passenger_type: string;
+                    payment_method: string;
+                    amount: string;
+                    created_at: string;
+                    updated_at: string;
+                  }[];
                 };
               };
             }) => (
@@ -276,6 +286,20 @@ export default function Trips() {
                             ) : (
                               <div className="size-3 bg-destructive rounded-full" />
                             ),
+                        },
+                        { title: "", content: <Separator className="my-6" /> },
+                        { title: "", content: <Separator className="my-6" /> },
+                        {
+                          title: "Fares:",
+                          content: (
+                            <div className="w-full grid grid-cols-3 gap-4">
+                              {x.trip.route.fares.map((x) => (
+                                <div key={x.id} className="w-full">
+                                  {x.passenger_type}: ${x.amount}
+                                </div>
+                              ))}
+                            </div>
+                          ),
                         },
                       ].map(({ title, content }, i) => (
                         <div className="flex flex-col" key={i}>

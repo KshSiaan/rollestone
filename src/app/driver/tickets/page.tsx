@@ -6,7 +6,7 @@ import RecentTransition from "./recent-transition";
 
 export default function Page() {
   return (
-    <main className="px-[100px] py-[50px] h-full w-full grid grid-cols-2 gap-12">
+    <main className="px-6 xl:px-[100px] xl:py-[50px] h-full w-full grid grid-cols-2 gap-12">
       <TicketTopup />
       <Card className="w-full h-[85dvh]">
         <CardHeader className="flex items-center justify-start gap-2">

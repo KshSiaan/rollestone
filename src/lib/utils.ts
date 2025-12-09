@@ -27,19 +27,22 @@ export async function howl<T>(
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "ngrok-skip-browser-warning": "69420",
+      // "ngrok-skip-browser-warning": "69420",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
-  });
+  }); 
+  const data = await res.json()
 
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error((errorData as idk).message || "API request failed");
+    // const errorData = await res.json().catch(() => ({}));
+    // throw new Error((errorData as idk).message || "API request failed");
+    console.log(data);
+    
   }
 
-  return res.json() as Promise<T>;
+  return data as Promise<T>;
 }
 
 

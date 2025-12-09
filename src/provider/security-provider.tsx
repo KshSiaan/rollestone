@@ -10,18 +10,11 @@ export default async function SecurityProvider({
 }: Readonly<{ children: ReactNode }>) {
   const token = (await cookies()).get("token")?.value;
 
-  if (!token) {
-    return redirect("/login");
-  }
+  if (!token) return redirect("/logout");
+
   const user: idk = await getProfileApi({ token });
-  if (!user.ok) {
-    try {
-      (await cookies()).delete("token");
-      return redirect("/login");
-    } catch (error) {
-      console.error(error);
-    }
-  }
+
+  if (!user.ok) return redirect("/logout");
 
   return <UserProvider initialUser={user.data}>{children}</UserProvider>;
 }

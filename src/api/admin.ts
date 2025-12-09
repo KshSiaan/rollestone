@@ -481,6 +481,22 @@ export const getPassengersApi = async ({
   });
 };
 
+export const getFareDataApi = async ({
+  companyID,
+  token,
+  search
+}: {
+  companyID: string;
+  token?: string;
+  search?:string
+}) => {
+  return howl(`/v1/driver/journeys/active`, {
+    method: "GET",
+    headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
+  });
+};
+
 // 2. Get passenger by ID
 export const getPassengerByIdApi = async ({
   id,
@@ -573,6 +589,22 @@ export const updatePassengerApi = async ({
 // ------------------ Wallet Management APIs ------------------
 
 // 1. Top-up passenger wallet
+export const payMakerApi = async ({
+  body,
+  companyID,
+  token,
+}: {
+  body: { amount: number };
+  companyID: string;
+  token?: string;
+}) => {
+  return howl(`/v1/driver/journeys/process-payment`, {
+    method: "POST",
+    body,
+    headers: { "X-Company-ID": String(companyID) },
+    ...(token && { token }),
+  });
+};
 export const topUpPassengerWalletApi = async ({
   passengerId,
   body,

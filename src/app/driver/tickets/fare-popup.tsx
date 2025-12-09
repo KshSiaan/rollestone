@@ -16,29 +16,30 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getPassengersApi, topUpPassengerWalletApi } from "@/api/admin";
+import {
+  getFareDataApi,
+  getPassengersApi,
+  payMakerApi,
+  topUpPassengerWalletApi,
+} from "@/api/admin";
 import { useUser } from "@/context/user-context";
 import { useCookies } from "react-cookie";
 import { idk } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { useRouter } from "next/navigation";
 
 export default function FarePopup({
   selectedItem,
   setDialogOpen,
+  fares,
 }: {
   selectedItem?: string;
   setDialogOpen: idk;
+  fares?: idk;
 }) {
-  const [amm, setAmm] = useState<number | undefined>();
-  const [passeng, setPasseng] = useState<string | undefined>();
+  const [qr, setQR] = useState("");
+
+  // const [passeng, setPasseng] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { user } = useUser();
   const navig = useRouter();
@@ -55,31 +56,32 @@ export default function FarePopup({
   >([
     // { title: "Adult", count: 1, price: 4.0 }
   ]);
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["passengers"],
-    queryFn: (): idk => {
-      return getPassengersApi({
-        companyID: String(user?.company_id),
-        token,
-      });
-    },
-  });
+  // const { data, isPending, isError, error } = useQuery({
+  //   queryKey: ["passengers"],
+  //   queryFn: (): idk => {
+  //     return getPassengersApi({
+  //       companyID: String(user?.company_id),
+  //       token,
+  //     });
+  //   },
+  // });
+
   const { mutate } = useMutation({
     mutationKey: ["topup"],
-    mutationFn: () => {
-      return topUpPassengerWalletApi({
-        passengerId: passeng!,
+    mutationFn: (body: any) => {
+      return payMakerApi({
         token,
         companyID: String(user?.company_id),
-        body: { amount: amm! },
+        body,
       });
     },
     onError: (err) => {
       toast.error(err.message ?? "Failed to complete this request");
     },
     onSuccess: (res: idk) => {
-      setAmm(undefined);
-      setPasseng(undefined);
+      // setAmm(undefined);
+      // setPasseng(undefined);
+      setQR("");
       setSubmitting(true);
       setDialogOpen(false);
       toast.success(res.message ?? "Top Up was successful");
@@ -144,15 +146,8 @@ export default function FarePopup({
 
   return (
     <>
-      {/* {!isPending && (
-        <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
-          <code className="whitespace-pre-wrap">
-            {JSON.stringify(data, null, 2)}
-          </code>
-        </pre>
-      )} */}
       <div className="p-4 space-y-4 w-full mx-auto">
-        {isError ? (
+        {/* {isError ? (
           <Alert>
             <AlertTitle>Something went wrong!</AlertTitle>
             <AlertDescription>{error.message}</AlertDescription>
@@ -175,12 +170,30 @@ export default function FarePopup({
                 ))}
             </SelectContent>
           </Select>
-        )}
+        )} */}
+        <Input
+          placeholder="Passenger code number"
+          value={qr}
+          onChange={(e) => {
+            setQR(e.target.value);
+          }}
+        />
         {fareList.map((fare, index) => (
           <Card key={index} className="p-0!">
             <CardContent className="flex justify-between items-center py-4 bg-blue-50 rounded-lg">
               <div>
-                <div className="font-semibold">{fare.title}</div>
+                <div className="font-semibold mb-4">{fare.title}</div>
+                <div className="flex gap-4 text-xs">
+                  {fares
+                    ?.filter(
+                      (z: idk) => z.passenger_type === fare.title.toLowerCase()
+                    )
+                    .map((item: any, index: number) => (
+                      <p key={index}>
+                        {item.payment_method}:${item.amount}
+                      </p>
+                    ))}
+                </div>
                 <div className="text-sm text-gray-500">
                   {/* ${fare.price.toFixed(2)} */}
                 </div>
@@ -255,7 +268,7 @@ export default function FarePopup({
           </DialogContent>
         </Dialog>
 
-        <Input
+        {/* <Input
           placeholder="Top Up amount"
           className="bg-background"
           min={1}
@@ -263,7 +276,7 @@ export default function FarePopup({
           onChange={(e) => {
             setAmm(parseInt(e.target.value));
           }}
-        />
+        /> */}
 
         <div className="text-center text-lg font-semibold">Payment Method</div>
         <div className="grid grid-cols-3 gap-2">
@@ -300,10 +313,35 @@ export default function FarePopup({
         </DialogClose>
         <Button
           className="bg-blue-500 hover:bg-blue-600/90 cursor-pointer"
+          // onClick={() => {
+          //   setSubmitting(true);
+          //   try {
+          //     // mutate();
+          //     console.log();
+
+          //   } catch (error) {
+          //     console.error(error);
+          //     toast.error("Something went wrong");
+          //   } finally {
+          //     setSubmitting(false);
+          //   }
+          // }}
           onClick={() => {
+            const payload = {
+              qr_number: qr,
+              payment_method: "Cash",
+              fares: fareList.map((f) => ({
+                type: f.title.toLowerCase(),
+                quantity: f.count,
+              })),
+            };
+
+            // console.log("SUBMIT DATA:", payload);
+
             setSubmitting(true);
+
             try {
-              mutate();
+              mutate(payload);
             } catch (error) {
               console.error(error);
               toast.error("Something went wrong");
